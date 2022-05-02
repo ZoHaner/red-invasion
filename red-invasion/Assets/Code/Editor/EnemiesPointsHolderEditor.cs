@@ -19,8 +19,6 @@ namespace Code.Editor
             }
 
             EditorUtility.SetDirty(target);
-
-            // DrawDefaultInspector();
         }
     }
 }
