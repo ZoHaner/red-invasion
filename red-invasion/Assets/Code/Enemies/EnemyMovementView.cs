@@ -6,7 +6,7 @@ namespace Code.Enemies
     {
         [SerializeField] private float _speed = 12f;
         
-        [SerializeField][HideInInspector] private WalkingRange _walkingRange;
+        [HideInInspector] public WalkingRange _walkingRange;
 
         private EnemyMovementController _enemyMovementController;
 
@@ -18,7 +18,6 @@ namespace Code.Enemies
 
         private void OnDestroy() => 
             UnsubscribeFromEvents();
-
 
         public void Tick(float deltaTime)
         {

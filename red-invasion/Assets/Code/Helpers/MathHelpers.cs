@@ -21,10 +21,10 @@ namespace Code.Helpers
             float dot = Vector3.Dot(point - lineStart, lineDirection);
             return dot < 0f || dot > lineLength;
         }
-        
-        public static Vector3 GetClosestPointOnInfiniteLine(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
+
+        public static Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Quaternion rotation)
         {
-            return lineStart + Vector3.Project(point - lineStart, lineEnd - lineStart);
+            return rotation * (point - pivot) + pivot;
         }
     }
 }
