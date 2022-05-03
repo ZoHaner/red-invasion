@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1ffbd2492c941ad8d82ed967a1e0f27, type: 3}
+  m_Name: EnemiesPointsHolder
+  m_EditorClassIdentifier: 
+  _spawnPoints:
+  - LeftMoveBorder: {x: -1.2885642, y: 0.05000019, z: 15.470234}
+    RightMoveBorder: {x: 0.21720743, y: 0.05000019, z: 15.470234}
+    SpawnPosition: {x: -0.6611514, y: 0.05000019, z: 15.470234}
+    SpawnRotation: {x: -0, y: -0, z: -0, w: 1}
+    Speed: 2
+  - LeftMoveBorder: {x: -1.1093792, y: 0.05000019, z: 3.25}
+    RightMoveBorder: {x: 1.2831304, y: 0.05000019, z: 3.25}
+    SpawnPosition: {x: -0.14275742, y: 0.05000019, z: 3.25}
+    SpawnRotation: {x: -0, y: -0, z: -0, w: 1}
+    Speed: 1
+  - LeftMoveBorder: {x: -1.2885642, y: 0.05000019, z: 19.37}
+    RightMoveBorder: {x: 1.2401316, y: 0.05000019, z: 19.37}
+    SpawnPosition: {x: -0.6611514, y: 0.05000019, z: 19.37}
+    SpawnRotation: {x: -0, y: -0, z: -0, w: 1}
+    Speed: 0.5
+  - LeftMoveBorder: {x: -1.3732865, y: 0.05000019, z: 4.67911}
+    RightMoveBorder: {x: 1.0500543, y: 0.05000019, z: 4.67911}
+    SpawnPosition: {x: -0.47886372, y: 0.05000019, z: 4.67911}
+    SpawnRotation: {x: -0, y: -0, z: -0, w: 1}
+    Speed: 0

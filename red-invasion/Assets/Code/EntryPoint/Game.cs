@@ -1,4 +1,5 @@
 using System;
+using Code.Services;
 using Code.States;
 using UnityEngine;
 
@@ -18,7 +19,18 @@ namespace Code.EntryPoint
         private void ConfigureStateMachine()
         {
             _stateMachine = new StateMachine();
-            _stateMachine.AddState(typeof(LoadLevelState), new LoadLevelState());
+
+            var assetProvider = new AssetProvider();
+            var updateProvider = CreateUpdateProvider();
+            var factory = new GameFactory(assetProvider, updateProvider);
+            
+            _stateMachine.AddState(typeof(LoadLevelState), new LoadLevelState(factory));
+        }
+
+        private IUpdateProvider CreateUpdateProvider()
+        {
+            var provider = new GameObject("Update Provider");
+            return provider.AddComponent<UpdateProvider>();
         }
 
         private void RunGame()
