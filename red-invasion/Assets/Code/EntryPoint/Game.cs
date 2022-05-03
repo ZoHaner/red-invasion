@@ -21,9 +21,16 @@ namespace Code.EntryPoint
             _stateMachine = new StateMachine();
 
             var assetProvider = new AssetProvider();
-            var factory = new GameFactory(assetProvider);
+            var updateProvider = CreateUpdateProvider();
+            var factory = new GameFactory(assetProvider, updateProvider);
             
             _stateMachine.AddState(typeof(LoadLevelState), new LoadLevelState(factory));
+        }
+
+        private IUpdateProvider CreateUpdateProvider()
+        {
+            var provider = new GameObject("Update Provider");
+            return provider.AddComponent<UpdateProvider>();
         }
 
         private void RunGame()

@@ -4,7 +4,10 @@ namespace Code.Enemies
 {
     public class EnemySpawnPoint : MonoBehaviour
     {
-        [HideInInspector] public WalkingRange EnemyWalkingRange;
+        [HideInInspector]
+        public WalkingRange EnemyWalkingRange;
+        public float EnemySpeed = 1f;
+
         private Vector3 BorderGizmoSize = new Vector3(0.1f, 0.5f, 0.1f);
 
         private void OnDrawGizmos()

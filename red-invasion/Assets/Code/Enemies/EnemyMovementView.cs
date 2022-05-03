@@ -2,13 +2,21 @@ using UnityEngine;
 
 namespace Code.Enemies
 {
-    public class EnemyMovementView : MonoBehaviour
+    public class EnemyMovementView : MonoBehaviour, IUpdatable
     {
         [SerializeField] private float _speed = 12f;
-        
-        [HideInInspector] public WalkingRange _walkingRange;
+
+        private Vector3 _leftBorder;
+        private Vector3 _rightBorder;
 
         private EnemyMovementController _enemyMovementController;
+
+        public void Construct(Vector3 leftMoveBorder, Vector3 rightMoveBorder, float speed)
+        {
+            _leftBorder = leftMoveBorder;
+            _rightBorder = rightMoveBorder;
+            _speed = speed;
+        }
 
         public void Initialize()
         {
@@ -16,21 +24,21 @@ namespace Code.Enemies
             SubscribeOnEvents();
         }
 
-        private void OnDestroy() => 
+        private void OnDestroy() =>
             UnsubscribeFromEvents();
 
         public void Tick(float deltaTime)
         {
-            _enemyMovementController.CalculateNextPosition(_walkingRange, transform.position, _speed, deltaTime);
+            _enemyMovementController.CalculateNextPosition(_leftBorder, _rightBorder, transform.position, _speed, deltaTime);
         }
 
-        private void ApplyMovement(Vector3 position) => 
+        private void ApplyMovement(Vector3 position) =>
             transform.position = position;
 
-        private void SubscribeOnEvents() => 
+        private void SubscribeOnEvents() =>
             _enemyMovementController.Moved += ApplyMovement;
 
-        private void UnsubscribeFromEvents() => 
+        private void UnsubscribeFromEvents() =>
             _enemyMovementController.Moved -= ApplyMovement;
     }
 }

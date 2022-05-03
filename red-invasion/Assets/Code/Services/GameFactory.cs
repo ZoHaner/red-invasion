@@ -10,35 +10,41 @@ namespace Code.Services
         private const string EnemiesPointsHolderAddress = "EnemiesPointsHolder";
 
         private readonly IAssetProvider _assetProvider;
+        private readonly IUpdateProvider _updateProvider;
 
-        public GameFactory(IAssetProvider assetProvider)
+        public GameFactory(IAssetProvider assetProvider, IUpdateProvider updateProvider)
         {
             _assetProvider = assetProvider;
+            _updateProvider = updateProvider;
         }
 
         public async void SpawnEnemies()
         {
-            var spawnPositions = await GetSpawnPoints();
+            var spawnPoints = await GetSpawnPoints();
             var prefab = await _assetProvider.Load<GameObject>(EnemyAddress);
 
-            foreach (var position in spawnPositions)
+            foreach (var spawnPoint in spawnPoints)
             {
-                SpawnEnemy(position, prefab);
+                SpawnEnemy(spawnPoint, prefab);
             }
         }
 
-        private void SpawnEnemy(Vector3 point, GameObject prefab)
+        private void SpawnEnemy(EnemySpawnParams enemyParams, GameObject prefab)
         {
-            var enemy = Object.Instantiate(prefab);
-            enemy.transform.position = point;
+            var enemy = Object.Instantiate(prefab, enemyParams.SpawnPosition, enemyParams.SpawnRotation);
             var enemyMovement = enemy.GetComponent<EnemyMovementView>();
+            enemyMovement.Construct(enemyParams.LeftMoveBorder, enemyParams.RightMoveBorder, enemyParams.Speed);
             enemyMovement.Initialize();
+            RegisterUpdatableObject(enemyMovement);
         }
 
-        private async Task<Vector3[]> GetSpawnPoints()
+        private async Task<EnemySpawnParams[]> GetSpawnPoints()
         {
             var holder = await _assetProvider.Load<EnemiesPointsHolder>(EnemiesPointsHolderAddress);
             return holder.SpawnPoints;
         }
+
+        private void RegisterUpdatableObject(IUpdatable updatable) =>
+            _updateProvider.Register(updatable);
     }
 }

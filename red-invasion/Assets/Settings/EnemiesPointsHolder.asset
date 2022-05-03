@@ -13,6 +13,23 @@ MonoBehaviour:
   m_Name: EnemiesPointsHolder
   m_EditorClassIdentifier: 
   _spawnPoints:
-  - {x: -0.26, y: 0, z: 3.98}
-  - {x: -0.73, y: 0, z: 3.98}
-  - {x: 0.97, y: 0, z: 3.98}
+  - LeftMoveBorder: {x: -1.2885642, y: 0.05000019, z: 15.470234}
+    RightMoveBorder: {x: 0.21720743, y: 0.05000019, z: 15.470234}
+    SpawnPosition: {x: -0.6611514, y: 0.05000019, z: 15.470234}
+    SpawnRotation: {x: -0, y: -0, z: -0, w: 1}
+    Speed: 2
+  - LeftMoveBorder: {x: -1.1093792, y: 0.05000019, z: 3.25}
+    RightMoveBorder: {x: 1.2831304, y: 0.05000019, z: 3.25}
+    SpawnPosition: {x: -0.14275742, y: 0.05000019, z: 3.25}
+    SpawnRotation: {x: -0, y: -0, z: -0, w: 1}
+    Speed: 1
+  - LeftMoveBorder: {x: -1.2885642, y: 0.05000019, z: 19.37}
+    RightMoveBorder: {x: 1.2401316, y: 0.05000019, z: 19.37}
+    SpawnPosition: {x: -0.6611514, y: 0.05000019, z: 19.37}
+    SpawnRotation: {x: -0, y: -0, z: -0, w: 1}
+    Speed: 0.5
+  - LeftMoveBorder: {x: -1.3732865, y: 0.05000019, z: 4.67911}
+    RightMoveBorder: {x: 1.0500543, y: 0.05000019, z: 4.67911}
+    SpawnPosition: {x: -0.47886372, y: 0.05000019, z: 4.67911}
+    SpawnRotation: {x: -0, y: -0, z: -0, w: 1}
+    Speed: 0

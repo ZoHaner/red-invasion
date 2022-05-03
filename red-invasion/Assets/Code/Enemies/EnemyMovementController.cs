@@ -12,18 +12,18 @@ namespace Code.Enemies
 
         private const float SpeedThreshold = 0.1f;
 
-        public void CalculateNextPosition(WalkingRange range, Vector3 position, float speed, float deltaTime)
+        public void CalculateNextPosition(Vector3 leftBorder, Vector3 rightBorder, Vector3 position, float speed, float deltaTime)
         {
             if (_direction == Vector3.zero)
-                GenerateDirection(range);
+                GenerateDirection(leftBorder, rightBorder);
 
             if(AlmostMotionless(speed))
                 return;
 
             var newPos = position + speed * _direction * deltaTime;
-            if (MathHelpers.OutOfBorders(position, range.LeftBorder, range.RightBorder))
+            if (MathHelpers.OutOfBorders(position, leftBorder, rightBorder))
             {
-                newPos = MathHelpers.GetClosestPointOnFiniteLine(position, range.LeftBorder, range.RightBorder);
+                newPos = MathHelpers.GetClosestPointOnFiniteLine(position, leftBorder, rightBorder);
                 FlipDirection();
             }
             
@@ -35,8 +35,8 @@ namespace Code.Enemies
             return Mathf.Abs(speed) <= SpeedThreshold;
         }
 
-        private void GenerateDirection(WalkingRange rng) =>
-            _direction = Random.value > 0.5f ? rng.LeftBorder - rng.RightBorder : rng.RightBorder - rng.LeftBorder;
+        private void GenerateDirection(Vector3 leftBorder, Vector3 rightBorder) =>
+            _direction = Random.value > 0.5f ? leftBorder - rightBorder : rightBorder - leftBorder;
 
         private void FlipDirection() => 
             _direction *= -1;
