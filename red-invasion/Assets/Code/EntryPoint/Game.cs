@@ -1,4 +1,5 @@
 using System;
+using Code.Input;
 using Code.Services;
 using Code.States;
 using UnityEngine;
@@ -22,7 +23,8 @@ namespace Code.EntryPoint
 
             var assetProvider = new AssetProvider();
             var updateProvider = CreateUpdateProvider();
-            var factory = new GameFactory(assetProvider, updateProvider);
+            var inputService = new StandaloneInputService();
+            var factory = new GameFactory(assetProvider, updateProvider, inputService);
             
             _stateMachine.AddState(typeof(LoadLevelState), new LoadLevelState(factory));
         }

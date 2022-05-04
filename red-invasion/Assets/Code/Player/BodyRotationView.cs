@@ -4,21 +4,21 @@ using UnityEngine;
 
 namespace Code.Player
 {
-    public class CameraRotationView : MonoBehaviour, IUpdatable
+    public class BodyRotationView : MonoBehaviour, IUpdatable
     {
         [SerializeField] private float MouseSensitivity = 100f;
-        [SerializeField] private Transform Camera;
+        [SerializeField] private Transform Body;
 
         private IInputService _inputService;
 
-        private CameraRotationController _cameraRotationController;
+        private BodyRotationController _bodyRotationController;
 
         public void Construct(IInputService inputService) =>
             _inputService = inputService;
 
         public void Initialize()
         {
-            _cameraRotationController = new CameraRotationController();
+            _bodyRotationController = new BodyRotationController();
             SubscribeOnEvents();
         }
 
@@ -28,16 +28,16 @@ namespace Code.Player
         public void Tick(float deltaTime)
         {
             var rotateVector = _inputService.GetLookAxis();
-            _cameraRotationController.Tick(rotateVector, MouseSensitivity, deltaTime);
+            _bodyRotationController.Tick(rotateVector, MouseSensitivity, deltaTime);
         }
 
-        private void ApplyRotation(Quaternion rotation) =>
-            Camera.localRotation = rotation;
+        private void ApplyRotation(Quaternion rotation) => 
+            Body.localRotation = rotation;
 
         private void SubscribeOnEvents() =>
-            _cameraRotationController.CameraRotated += ApplyRotation;
+            _bodyRotationController.BodyRotated += ApplyRotation;
 
         private void UnsubscribeFromEvents() =>
-            _cameraRotationController.CameraRotated -= ApplyRotation;
+            _bodyRotationController.BodyRotated -= ApplyRotation;
     }
 }

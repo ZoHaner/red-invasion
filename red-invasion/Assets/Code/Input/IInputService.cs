@@ -7,5 +7,6 @@ namespace Code.Input
         Vector2 GetMoveAxis();
         Vector2 GetLookAxis();
         bool IsAttackButtonPressed();
+        bool GetJump();
     }
 }

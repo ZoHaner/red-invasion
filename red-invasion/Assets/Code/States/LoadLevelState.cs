@@ -13,6 +13,7 @@ namespace Code.States
 
         public void Enter()
         {
+            _factory.SpawnPlayer();
             _factory.SpawnEnemies();
         }
 

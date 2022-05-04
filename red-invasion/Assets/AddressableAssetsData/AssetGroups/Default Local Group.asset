@@ -25,6 +25,10 @@ MonoBehaviour:
     m_Address: EnemiesPointsHolder
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 15262a4d946a94c0abff78191e72eb11
+    m_Address: Player
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 305ddc907c92140d997fd21a34393fbf, type: 2}
   m_SchemaSet:
