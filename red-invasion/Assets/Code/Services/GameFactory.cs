@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Code.Bullets;
 using Code.Enemies;
 using Code.Input;
 using Code.Player;
@@ -13,6 +14,10 @@ namespace Code.Services
         private const string PlayerAddress = "Player";
         private const string EnemiesPointsHolderAddress = "EnemiesPointsHolder";
         private const string BulletAddress = "Bullet";
+        
+        // ToDo Get bullets speed from Static data
+        private const float BulletSpeed = 15f; 
+
 
         private readonly IAssetProvider _assetProvider;
         private readonly IUpdateProvider _updateProvider;
@@ -64,6 +69,13 @@ namespace Code.Services
         {
             var prefab = await _assetProvider.Load<GameObject>(BulletAddress);
             var bullet = Object.Instantiate(prefab, position, Quaternion.identity);
+
+            var bulletController = new BulletController(new BulletModel(position, direction, BulletSpeed));
+            var bulletView = bullet.GetComponent<BulletView>();
+            
+            bulletController.PositionChanged += bulletView.OnPositionChanged;
+            
+            RegisterUpdatableObject(bulletController);
         }
 
         public async void SpawnEnemies()
@@ -93,6 +105,6 @@ namespace Code.Services
         }
 
         private void RegisterUpdatableObject(IUpdatable updatable) =>
-            _updateProvider.Register(updatable);
+            _updateProvider.EnqueueRegister(updatable);
     }
 }
