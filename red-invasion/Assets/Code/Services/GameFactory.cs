@@ -3,6 +3,7 @@ using Code.Enemies;
 using Code.Input;
 using Code.Player;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Code.Services
 {
@@ -11,6 +12,7 @@ namespace Code.Services
         private const string EnemyAddress = "Enemy";
         private const string PlayerAddress = "Player";
         private const string EnemiesPointsHolderAddress = "EnemiesPointsHolder";
+        private const string BulletAddress = "Bullet";
 
         private readonly IAssetProvider _assetProvider;
         private readonly IUpdateProvider _updateProvider;
@@ -27,24 +29,43 @@ namespace Code.Services
         {
             var prefab = await _assetProvider.Load<GameObject>(PlayerAddress);
             var player = Object.Instantiate(prefab, Vector3.up, Quaternion.identity);
-            
+
             var playerCamera = player.GetComponent<CameraRotationView>();
             playerCamera.Construct(_inputService);
             playerCamera.Initialize();
-            
+
             var playerBody = player.GetComponent<BodyRotationView>();
             playerBody.Construct(_inputService);
             playerBody.Initialize();
-            
+
             var playerMovement = player.GetComponent<PlayerMovementView>();
             playerMovement.Construct(_inputService);
             playerMovement.Initialize();
-            
+
+            ConfigureGun(player);
+
             RegisterUpdatableObject(playerCamera);
             RegisterUpdatableObject(playerBody);
             RegisterUpdatableObject(playerMovement);
         }
-        
+
+        private void ConfigureGun(GameObject player)
+        {
+            var gunController = new GunController();
+            gunController.Shoot += SpawnBullet;
+
+            var gunView = player.GetComponentInChildren<GunView>();
+            gunView.Construct(_inputService, gunController);
+
+            RegisterUpdatableObject(gunView);
+        }
+
+        private async void SpawnBullet(Vector3 position, Vector3 direction)
+        {
+            var prefab = await _assetProvider.Load<GameObject>(BulletAddress);
+            var bullet = Object.Instantiate(prefab, position, Quaternion.identity);
+        }
+
         public async void SpawnEnemies()
         {
             var spawnPoints = await GetSpawnPoints();
