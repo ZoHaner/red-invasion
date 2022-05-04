@@ -1,4 +1,4 @@
-namespace Code.Enemies
+namespace Code.Services
 {
     public interface IUpdatable
     {
