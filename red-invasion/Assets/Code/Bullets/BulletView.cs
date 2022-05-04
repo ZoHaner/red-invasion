@@ -5,7 +5,7 @@ namespace Code.Bullets
 {
     public class BulletView : MonoBehaviour
     {
-        public Action Collided;
+        public Action<BulletView, GameObject> Collided;
         
         public void OnPositionChanged(Vector3 position)
         {
@@ -14,7 +14,7 @@ namespace Code.Bullets
         
         private void OnCollisionEnter(Collision collision)
         {
-            Collided?.Invoke();
+            Collided?.Invoke(this, collision.gameObject);
         }
     }
 }

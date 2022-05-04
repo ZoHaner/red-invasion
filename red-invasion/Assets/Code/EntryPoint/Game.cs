@@ -1,4 +1,5 @@
 using System;
+using Code.Bullets;
 using Code.Input;
 using Code.Services;
 using Code.States;
@@ -24,7 +25,10 @@ namespace Code.EntryPoint
             var assetProvider = new AssetProvider();
             var updateProvider = CreateUpdateProvider();
             var inputService = new StandaloneInputService();
-            var factory = new GameFactory(assetProvider, updateProvider, inputService);
+
+
+            var bulletsCollisionHandler = new BulletsCollisionHandler();
+            var factory = new GameFactory(assetProvider, updateProvider, inputService, bulletsCollisionHandler);
             
             _stateMachine.AddState(typeof(LoadLevelState), new LoadLevelState(factory));
         }

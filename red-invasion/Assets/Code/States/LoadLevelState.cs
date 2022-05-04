@@ -13,6 +13,8 @@ namespace Code.States
 
         public void Enter()
         {
+            // ToDo: Initialize and fill pools
+            
             _factory.SpawnPlayer();
             _factory.SpawnEnemies();
         }

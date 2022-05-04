@@ -22,12 +22,14 @@ namespace Code.Services
         private readonly IAssetProvider _assetProvider;
         private readonly IUpdateProvider _updateProvider;
         private readonly IInputService _inputService;
+        private readonly BulletsCollisionHandler _bulletsCollisionHandler;
 
-        public GameFactory(IAssetProvider assetProvider, IUpdateProvider updateProvider, IInputService inputService)
+        public GameFactory(IAssetProvider assetProvider, IUpdateProvider updateProvider, IInputService inputService, BulletsCollisionHandler bulletsCollisionHandler)
         {
             _assetProvider = assetProvider;
             _updateProvider = updateProvider;
             _inputService = inputService;
+            _bulletsCollisionHandler = bulletsCollisionHandler;
         }
 
         public async void SpawnPlayer()
@@ -74,6 +76,7 @@ namespace Code.Services
             var bulletView = bullet.GetComponent<BulletView>();
             
             bulletController.PositionChanged += bulletView.OnPositionChanged;
+            bulletView.Collided += _bulletsCollisionHandler.OnBulletCollided;
             
             RegisterUpdatableObject(bulletController);
         }
