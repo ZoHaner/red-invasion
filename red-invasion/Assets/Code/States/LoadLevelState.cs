@@ -4,19 +4,22 @@ namespace Code.States
 {
     public class LoadLevelState : IState
     {
-        private readonly IGameFactory _factory;
+        private readonly StateMachine _stateMachine;
+        private readonly IGameSession _session;
 
-        public LoadLevelState(IGameFactory factory)
+        public LoadLevelState(StateMachine stateMachine, IGameSession session)
         {
-            _factory = factory;
+            _stateMachine = stateMachine;
+            _session = session;
         }
 
-        public void Enter()
+        public async void Enter()
         {
-            // ToDo: Initialize and fill pools
-            
-            _factory.SpawnPlayer();
-            _factory.SpawnEnemies();
+            await _session.WarmUp();
+            _session.SpawnPlayer();
+            _session.SpawnEnemies();
+
+            _stateMachine.SetState(typeof(GameState));
         }
 
         public void Exit()

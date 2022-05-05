@@ -33,6 +33,10 @@ MonoBehaviour:
     m_Address: Bullet
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 95c155bf8175a4b90992ecf89b15c705
+    m_Address: Bullet Parameters
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 305ddc907c92140d997fd21a34393fbf, type: 2}
   m_SchemaSet:

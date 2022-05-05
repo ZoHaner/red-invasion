@@ -8,23 +8,23 @@ using Object = UnityEngine.Object;
 
 namespace Code.Services
 {
-    public class GameFactory : IGameFactory
+    public class GameSession : IGameSession
     {
+        private BulletFactory _bulletFactory;
+
         private const string EnemyAddress = "Enemy";
         private const string PlayerAddress = "Player";
         private const string EnemiesPointsHolderAddress = "EnemiesPointsHolder";
-        private const string BulletAddress = "Bullet";
-        
-        // ToDo Get bullets speed from Static data
-        private const float BulletSpeed = 15f; 
-
 
         private readonly IAssetProvider _assetProvider;
         private readonly IUpdateProvider _updateProvider;
         private readonly IInputService _inputService;
         private readonly BulletsCollisionHandler _bulletsCollisionHandler;
 
-        public GameFactory(IAssetProvider assetProvider, IUpdateProvider updateProvider, IInputService inputService, BulletsCollisionHandler bulletsCollisionHandler)
+        private GameObject _playerPrefab;
+        private GameObject _enemyPrefab;
+
+        public GameSession(IAssetProvider assetProvider, IUpdateProvider updateProvider, IInputService inputService, BulletsCollisionHandler bulletsCollisionHandler)
         {
             _assetProvider = assetProvider;
             _updateProvider = updateProvider;
@@ -32,10 +32,21 @@ namespace Code.Services
             _bulletsCollisionHandler = bulletsCollisionHandler;
         }
 
-        public async void SpawnPlayer()
+        public async void Initialize()
         {
-            var prefab = await _assetProvider.Load<GameObject>(PlayerAddress);
-            var player = Object.Instantiate(prefab, Vector3.up, Quaternion.identity);
+            _bulletFactory = new BulletFactory(_assetProvider, _updateProvider);
+            await _bulletFactory.WarmUp();
+        }
+
+        public async Task WarmUp()
+        {
+            _playerPrefab = await _assetProvider.Load<GameObject>(PlayerAddress);
+            _enemyPrefab = await _assetProvider.Load<GameObject>(EnemyAddress);
+        }
+
+        public void SpawnPlayer()
+        {
+            var player = Object.Instantiate(_playerPrefab, Vector3.up, Quaternion.identity);
 
             var playerCamera = player.GetComponent<CameraRotationView>();
             playerCamera.Construct(_inputService);
@@ -67,28 +78,27 @@ namespace Code.Services
             RegisterUpdatableObject(gunView);
         }
 
-        private async void SpawnBullet(Vector3 position, Vector3 direction)
-        {
-            var prefab = await _assetProvider.Load<GameObject>(BulletAddress);
-            var bullet = Object.Instantiate(prefab, position, Quaternion.identity);
 
-            var bulletController = new BulletController(new BulletModel(position, direction, BulletSpeed));
-            var bulletView = bullet.GetComponent<BulletView>();
-            
-            bulletController.PositionChanged += bulletView.OnPositionChanged;
-            bulletView.Collided += _bulletsCollisionHandler.OnBulletCollided;
-            
-            RegisterUpdatableObject(bulletController);
+        private void SpawnBullet(Vector3 position, Vector3 direction)
+        {
+            var bulletView = _bulletFactory.CreateBullet(position, direction);
+            bulletView.Collided += OnBulletCollided;
         }
+
+        private void OnBulletCollided(BulletView bulletView, GameObject collidedObject)
+        {
+            bulletView.Collided -= OnBulletCollided;
+            _bulletFactory.DestroyBullet(bulletView);
+        }
+
 
         public async void SpawnEnemies()
         {
             var spawnPoints = await GetSpawnPoints();
-            var prefab = await _assetProvider.Load<GameObject>(EnemyAddress);
 
             foreach (var spawnPoint in spawnPoints)
             {
-                SpawnEnemy(spawnPoint, prefab);
+                SpawnEnemy(spawnPoint, _enemyPrefab);
             }
         }
 

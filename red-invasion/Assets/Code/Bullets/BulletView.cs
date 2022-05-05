@@ -7,14 +7,15 @@ namespace Code.Bullets
     {
         public Action<BulletView, GameObject> Collided;
         
-        public void OnPositionChanged(Vector3 position)
+        public void Move(Vector3 position)
         {
             transform.position = position;
         }
         
-        private void OnCollisionEnter(Collision collision)
+        private void OnTriggerEnter(Collider other)
         {
-            Collided?.Invoke(this, collision.gameObject);
+            Debug.Log("Collision Happened with " + other.transform.name);
+            Collided?.Invoke(this, other.gameObject);
         }
     }
 }
