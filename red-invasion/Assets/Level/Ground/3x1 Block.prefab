@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3304684660671835296}
   - component: {fileID: 36285956891949478}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2558066710490923289}
   m_RootOrder: 3
@@ -53,7 +54,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2558066710490923289}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 3x1 Block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,6 +71,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3575498183838861665}
   - {fileID: 9041914129353453634}
