@@ -1,9 +1,10 @@
 using Code.Input;
+using Code.Services;
 using UnityEngine;
 
 namespace Code.Player
 {
-    public class CameraRotationView : MonoBehaviour
+    public class CameraRotationView : MonoBehaviour, IUpdatable
     {
         [SerializeField] private float MouseSensitivity = 100f;
         [SerializeField] private Transform Camera;
@@ -26,11 +27,11 @@ namespace Code.Player
 
         public void Tick(float deltaTime)
         {
-            var rotateVector = _inputService.GetMoveAxis();
+            var rotateVector = _inputService.GetLookAxis();
             _cameraRotationController.Tick(rotateVector, MouseSensitivity, deltaTime);
         }
 
-        private void ApplyRotation(Quaternion rotation) => 
+        private void ApplyRotation(Quaternion rotation) =>
             Camera.localRotation = rotation;
 
         private void SubscribeOnEvents() =>

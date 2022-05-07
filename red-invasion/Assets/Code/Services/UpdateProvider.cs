@@ -1,20 +1,42 @@
 using System.Collections.Generic;
-using Code.Enemies;
 using UnityEngine;
 
 namespace Code.Services
 {
     public class UpdateProvider : MonoBehaviour, IUpdateProvider
     {
-        private HashSet<IUpdatable> _updatables = new HashSet<IUpdatable>();
+        private readonly HashSet<IUpdatable> _updatables = new HashSet<IUpdatable>();
+        private readonly Queue<IUpdatable> _updatablesToAdd = new Queue<IUpdatable>();
+        private readonly Queue<IUpdatable> _updatablesToRemove = new Queue<IUpdatable>();
 
         private void Update()
         {
-            foreach (var updatable in _updatables) 
+            foreach (var updatable in _updatables)
                 updatable.Tick(Time.deltaTime);
+
+            RemoveElements();
+            AddElements();
         }
 
-        public void Register(IUpdatable updatable)
+        private void RemoveElements()
+        {
+            while (_updatablesToRemove.Count > 0)
+                Unregister(_updatablesToRemove.Dequeue());
+        }
+
+        private void AddElements()
+        {
+            while (_updatablesToAdd.Count > 0)
+                Register(_updatablesToAdd.Dequeue());
+        }
+
+        public void EnqueueRegister(IUpdatable updatable) =>
+            _updatablesToAdd.Enqueue(updatable);
+
+        public void EnqueueUnregister(IUpdatable updatable) =>
+            _updatablesToRemove.Enqueue(updatable);
+
+        private void Register(IUpdatable updatable)
         {
             if (_updatables.Contains(updatable))
             {
@@ -25,7 +47,7 @@ namespace Code.Services
             _updatables.Add(updatable);
         }
 
-        public void Unregister(IUpdatable updatable)
+        private void Unregister(IUpdatable updatable)
         {
             if (_updatables.Contains(updatable))
             {

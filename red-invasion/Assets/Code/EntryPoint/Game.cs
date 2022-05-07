@@ -1,4 +1,6 @@
 using System;
+using Code.Bullets;
+using Code.Input;
 using Code.Services;
 using Code.States;
 using UnityEngine;
@@ -22,20 +24,21 @@ namespace Code.EntryPoint
 
             var assetProvider = new AssetProvider();
             var updateProvider = CreateUpdateProvider();
-            var factory = new GameFactory(assetProvider, updateProvider);
+            var inputService = new StandaloneInputService();
+
+
+            var bulletsCollisionHandler = new BulletsCollisionHandler();
+            var session = new GameSession(assetProvider, updateProvider, inputService, bulletsCollisionHandler);
+            session.Initialize();
             
-            _stateMachine.AddState(typeof(LoadLevelState), new LoadLevelState(factory));
+            _stateMachine.AddState(typeof(LoadLevelState), new LoadLevelState(_stateMachine, session));
+            _stateMachine.AddState(typeof(GameState), new GameState(_stateMachine, session));
         }
 
-        private IUpdateProvider CreateUpdateProvider()
-        {
-            var provider = new GameObject("Update Provider");
-            return provider.AddComponent<UpdateProvider>();
-        }
+        private IUpdateProvider CreateUpdateProvider() => 
+            new GameObject(nameof(UpdateProvider)).AddComponent<UpdateProvider>();
 
-        private void RunGame()
-        {
+        private void RunGame() => 
             _stateMachine.SetState(_entryState);
-        }
     }
 }

@@ -9,5 +9,10 @@ namespace Code.Services
         {
             return await Addressables.LoadAssetAsync<T>(address).Task;
         }
+
+        public async Task<T> Load<T>(AssetReferenceGameObject reference) where T : class
+        {
+            return await Addressables.LoadAssetAsync<T>(reference).Task;
+        }
     }
 }
