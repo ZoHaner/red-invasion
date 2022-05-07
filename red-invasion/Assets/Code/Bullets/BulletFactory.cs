@@ -10,7 +10,7 @@ namespace Code.Services
     public class BulletFactory
     {
         private const string BulletParamsAddress = "Bullet Parameters";
-        
+
         private readonly IAssetProvider _assetProvider;
         private readonly IUpdateProvider _updateProvider;
 
@@ -38,7 +38,6 @@ namespace Code.Services
             _bulletPrefab = await _assetProvider.Load<GameObject>(_bulletParams.PrefabReference);
         }
 
-
         public BulletController GetBullet(Vector3 position, Vector3 direction)
         {
             var bullet = _bullets.Get();
@@ -62,7 +61,7 @@ namespace Code.Services
             }
         }
 
-        private BulletView InstantiateBullet() => 
+        private BulletView InstantiateBullet() =>
             Object.Instantiate(_bulletPrefab, Anchor<BulletView>.Transform).GetComponent<BulletView>();
 
         private BulletController ConfigureBullet(BulletView bulletView, Vector3 position, Vector3 direction)
@@ -71,7 +70,7 @@ namespace Code.Services
             bulletController.PositionChanged += bulletView.Move;
             _bulletComponents[bulletController] = bulletView;
             bulletView.gameObject.SetActive(true);
-            
+
             _updateProvider.EnqueueRegister(bulletController);
             return bulletController;
         }

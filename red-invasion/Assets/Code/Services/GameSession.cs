@@ -24,6 +24,8 @@ namespace Code.Services
         private GameObject _playerPrefab;
         private GameObject _enemyPrefab;
 
+        private BulletVFXPool _bulletVFXPool;
+
         public GameSession(IAssetProvider assetProvider, IUpdateProvider updateProvider, IInputService inputService, BulletsCollisionHandler bulletsCollisionHandler)
         {
             _assetProvider = assetProvider;
@@ -36,6 +38,12 @@ namespace Code.Services
         {
             _bulletFactory = new BulletFactory(_assetProvider, _updateProvider);
             await _bulletFactory.WarmUp();
+            _bulletVFXPool = new BulletVFXPool(_assetProvider);
+            _bulletVFXPool.Initialize();
+            await _bulletVFXPool.WarmUp();
+
+            // _bulletsCollisionHandler.AddCollisionHandler("Obstacles", _bulletVFXPool.);
+            _bulletsCollisionHandler.SetBulletCollisionCallback(SpawnBulletVFX);
         }
 
         public async Task WarmUp()
@@ -82,15 +90,23 @@ namespace Code.Services
         private void SpawnBullet(Vector3 position, Vector3 direction)
         {
             var bulletController = _bulletFactory.GetBullet(position, direction);
+            
             bulletController.Collided += OnBulletCollided;
+            bulletController.Collided += _bulletsCollisionHandler.OnBulletCollided;
         }
 
-        private void OnBulletCollided(BulletController bulletController, Collider[] colliders)
+        private void SpawnBulletVFX(Vector3 position)
+        {
+            _bulletVFXPool.GetBulletVFX(position);
+        }
+
+        private void OnBulletCollided(BulletController bulletController, Vector3 bulletPosition, Collider[] colliders)
         {
             bulletController.Collided -= OnBulletCollided;
+            bulletController.Collided -= _bulletsCollisionHandler.OnBulletCollided;
+            
             _bulletFactory.ReleaseBullet(bulletController);
         }
-
 
         public async void SpawnEnemies()
         {

@@ -26,8 +26,10 @@ namespace Code.EntryPoint
             var updateProvider = CreateUpdateProvider();
             var inputService = new StandaloneInputService();
 
+            var bulletVFXPool = new BulletVFXPool(assetProvider);
+            bulletVFXPool.Initialize();
 
-            var bulletsCollisionHandler = new BulletsCollisionHandler();
+            var bulletsCollisionHandler = new BulletsCollisionHandler(bulletVFXPool);
             var session = new GameSession(assetProvider, updateProvider, inputService, bulletsCollisionHandler);
             session.Initialize();
             

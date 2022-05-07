@@ -37,6 +37,14 @@ MonoBehaviour:
     m_Address: Bullet Parameters
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 55db10e1a587148ec87a46926c2cdfc3
+    m_Address: BulletVFX
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 1ffcc091322f64dc3a0d09537b5501df
+    m_Address: Bullet VFX Params
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 305ddc907c92140d997fd21a34393fbf, type: 2}
   m_SchemaSet:
