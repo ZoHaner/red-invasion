@@ -26,7 +26,6 @@ namespace Code.EntryPoint
             var inputService = new StandaloneInputService();
 
             var session = new GameSession(assetProvider, updateProvider, inputService);
-            session.Initialize();
             
             _stateMachine.AddState(typeof(LoadLevelState), new LoadLevelState(_stateMachine, session));
             _stateMachine.AddState(typeof(GameState), new GameState(_stateMachine, session));

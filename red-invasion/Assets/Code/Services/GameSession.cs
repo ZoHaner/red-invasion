@@ -13,19 +13,17 @@ namespace Code.Services
     {
         private BulletFactory _bulletFactory;
 
-        private const string EnemyAddress = "Enemy";
         private const string PlayerAddress = "Player";
-        private const string EnemiesPointsHolderAddress = "EnemiesPointsHolder";
 
         private readonly IAssetProvider _assetProvider;
         private readonly IUpdateProvider _updateProvider;
         private readonly IInputService _inputService;
 
         private GameObject _playerPrefab;
-        private GameObject _enemyPrefab;
 
         private BulletsCollisionHandler _bulletsCollisionHandler;
         private BulletVFXPool _bulletVFXPool;
+        private EnemyFactory _enemyFactory;
 
         public GameSession(IAssetProvider assetProvider, IUpdateProvider updateProvider, IInputService inputService)
         {
@@ -34,23 +32,30 @@ namespace Code.Services
             _inputService = inputService;
         }
 
-        public async void Initialize()
+        public async Task WarmUp()
         {
+            _playerPrefab = await _assetProvider.Load<GameObject>(PlayerAddress);
+            
+            _enemyFactory = new EnemyFactory(_assetProvider, _updateProvider);
+            await _enemyFactory.WarmUp();
+
             _bulletFactory = new BulletFactory(_assetProvider, _updateProvider);
             await _bulletFactory.WarmUp();
-            
+
             _bulletVFXPool = new BulletVFXPool(_assetProvider);
             _bulletVFXPool.Initialize();
             await _bulletVFXPool.WarmUp();
+        }
 
+        public void Initialize()
+        {
             _bulletsCollisionHandler = new BulletsCollisionHandler(_bulletVFXPool);
             _bulletsCollisionHandler.SetBulletCollisionCallback(SpawnBulletVFX);
         }
 
-        public async Task WarmUp()
+        public void Start()
         {
-            _playerPrefab = await _assetProvider.Load<GameObject>(PlayerAddress);
-            _enemyPrefab = await _assetProvider.Load<GameObject>(EnemyAddress);
+            _enemyFactory.SpawnEnemiesAtSpawnPoints();
         }
 
         public void SpawnPlayer()
@@ -87,11 +92,10 @@ namespace Code.Services
             RegisterUpdatableObject(gunView);
         }
 
-
         private void SpawnBullet(Vector3 position, Vector3 direction)
         {
             var bulletController = _bulletFactory.GetBullet(position, direction);
-            
+
             bulletController.Collided += OnBulletCollided;
             bulletController.Collided += _bulletsCollisionHandler.OnBulletCollided;
         }
@@ -112,33 +116,8 @@ namespace Code.Services
         {
             bulletController.Collided -= OnBulletCollided;
             bulletController.Collided -= _bulletsCollisionHandler.OnBulletCollided;
-            
+
             _bulletFactory.ReleaseBullet(bulletController);
-        }
-
-        public async void SpawnEnemies()
-        {
-            var spawnPoints = await GetSpawnPoints();
-
-            foreach (var spawnPoint in spawnPoints)
-            {
-                SpawnEnemy(spawnPoint, _enemyPrefab);
-            }
-        }
-
-        private void SpawnEnemy(EnemySpawnParams enemyParams, GameObject prefab)
-        {
-            var enemy = Object.Instantiate(prefab, enemyParams.SpawnPosition, enemyParams.SpawnRotation);
-            var enemyMovement = enemy.GetComponent<EnemyMovementView>();
-            enemyMovement.Construct(enemyParams.LeftMoveBorder, enemyParams.RightMoveBorder, enemyParams.Speed);
-            enemyMovement.Initialize();
-            RegisterUpdatableObject(enemyMovement);
-        }
-
-        private async Task<EnemySpawnParams[]> GetSpawnPoints()
-        {
-            var holder = await _assetProvider.Load<EnemiesPointsHolder>(EnemiesPointsHolderAddress);
-            return holder.SpawnPoints;
         }
 
         private void RegisterUpdatableObject(IUpdatable updatable) =>
