@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Code.Services;
 using UnityEngine;
 using UnityEngine.Pool;
+using Object = UnityEngine.Object;
 
 namespace Code.Bullets
 {
@@ -11,7 +12,7 @@ namespace Code.Bullets
 
         private readonly IAssetProvider _assetProvider;
 
-        private ObjectPool<GameObject> _bulletVFXs;
+        private ObjectPool<BulletVFXView> _bulletVFXs;
         private GameObject _bulletVFXPrefab;
         private BulletVFXParams _bulletVFXParams;
 
@@ -22,7 +23,7 @@ namespace Code.Bullets
 
         public void Initialize()
         {
-            _bulletVFXs = new ObjectPool<GameObject>(InstantiateVFX);
+            _bulletVFXs = new ObjectPool<BulletVFXView>(InstantiateVFX);
         }
 
         public async Task WarmUp()
@@ -31,27 +32,30 @@ namespace Code.Bullets
             _bulletVFXPrefab = await _assetProvider.Load<GameObject>(_bulletVFXParams.PrefabReference);
         }
 
-        public GameObject GetBulletVFX(Vector3 position)
+        public BulletVFXView GetBulletVFX(Vector3 position)
         {
-            var bullet = _bulletVFXs.Get();
-            ConfigureBulletVFX(bullet, position);
-            return bullet;
+            var bulletView = _bulletVFXs.Get();
+            ConfigureBulletVFX(bulletView, position);
+            bulletView.gameObject.SetActive(true);
+            return bulletView;
         }
 
-        private void ConfigureBulletVFX(GameObject vfx, Vector3 position)
+        private void ConfigureBulletVFX(BulletVFXView vfx, Vector3 position)
         {
             vfx.transform.position = position;
         }
 
-        public void ReleaseBulletVFX(GameObject bulletVFX)
+        public void ReleaseBulletVFX(BulletVFXView bulletVFXView)
         {
-            _bulletVFXs.Release(bulletVFX);
-            bulletVFX.gameObject.SetActive(false);
+            _bulletVFXs.Release(bulletVFXView);
+            bulletVFXView.gameObject.SetActive(false);
         }
 
-        private GameObject InstantiateVFX()
+        private BulletVFXView InstantiateVFX()
         {
-            return Object.Instantiate(_bulletVFXPrefab);
+            var bulletVFXView = Object.Instantiate(_bulletVFXPrefab).GetComponent<BulletVFXView>();
+            bulletVFXView.Initialize();
+            return bulletVFXView;
         }
     }
 }

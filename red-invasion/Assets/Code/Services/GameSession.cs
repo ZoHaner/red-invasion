@@ -19,30 +19,30 @@ namespace Code.Services
         private readonly IAssetProvider _assetProvider;
         private readonly IUpdateProvider _updateProvider;
         private readonly IInputService _inputService;
-        private readonly BulletsCollisionHandler _bulletsCollisionHandler;
 
         private GameObject _playerPrefab;
         private GameObject _enemyPrefab;
 
+        private BulletsCollisionHandler _bulletsCollisionHandler;
         private BulletVFXPool _bulletVFXPool;
 
-        public GameSession(IAssetProvider assetProvider, IUpdateProvider updateProvider, IInputService inputService, BulletsCollisionHandler bulletsCollisionHandler)
+        public GameSession(IAssetProvider assetProvider, IUpdateProvider updateProvider, IInputService inputService)
         {
             _assetProvider = assetProvider;
             _updateProvider = updateProvider;
             _inputService = inputService;
-            _bulletsCollisionHandler = bulletsCollisionHandler;
         }
 
         public async void Initialize()
         {
             _bulletFactory = new BulletFactory(_assetProvider, _updateProvider);
             await _bulletFactory.WarmUp();
+            
             _bulletVFXPool = new BulletVFXPool(_assetProvider);
             _bulletVFXPool.Initialize();
             await _bulletVFXPool.WarmUp();
 
-            // _bulletsCollisionHandler.AddCollisionHandler("Obstacles", _bulletVFXPool.);
+            _bulletsCollisionHandler = new BulletsCollisionHandler(_bulletVFXPool);
             _bulletsCollisionHandler.SetBulletCollisionCallback(SpawnBulletVFX);
         }
 
@@ -97,7 +97,14 @@ namespace Code.Services
 
         private void SpawnBulletVFX(Vector3 position)
         {
-            _bulletVFXPool.GetBulletVFX(position);
+            var bulletVFXView = _bulletVFXPool.GetBulletVFX(position);
+            bulletVFXView.ParticlesStopped += ReleaseBulletVFX;
+        }
+
+        private void ReleaseBulletVFX(BulletVFXView bulletVFXView)
+        {
+            bulletVFXView.ParticlesStopped -= ReleaseBulletVFX;
+            _bulletVFXPool.ReleaseBulletVFX(bulletVFXView);
         }
 
         private void OnBulletCollided(BulletController bulletController, Vector3 bulletPosition, Collider[] colliders)
