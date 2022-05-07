@@ -81,14 +81,14 @@ namespace Code.Services
 
         private void SpawnBullet(Vector3 position, Vector3 direction)
         {
-            var bulletView = _bulletFactory.CreateBullet(position, direction);
-            bulletView.Collided += OnBulletCollided;
+            var bulletController = _bulletFactory.GetBullet(position, direction);
+            bulletController.Collided += OnBulletCollided;
         }
 
-        private void OnBulletCollided(BulletView bulletView, GameObject collidedObject)
+        private void OnBulletCollided(BulletController bulletController, Collider[] colliders)
         {
-            bulletView.Collided -= OnBulletCollided;
-            _bulletFactory.DestroyBullet(bulletView);
+            bulletController.Collided -= OnBulletCollided;
+            _bulletFactory.ReleaseBullet(bulletController);
         }
 
 

@@ -17,7 +17,7 @@ namespace Code.Services
         private ObjectPool<BulletView> _bullets;
         private GameObject _bulletPrefab;
 
-        private Dictionary<BulletView, BulletController> _bulletComponents = new Dictionary<BulletView, BulletController>();
+        private Dictionary<BulletController, BulletView> _bulletComponents = new Dictionary<BulletController, BulletView>();
         private BulletParams _bulletParams;
 
         public BulletFactory(IAssetProvider assetProvider, IUpdateProvider updateProvider)
@@ -39,21 +39,21 @@ namespace Code.Services
         }
 
 
-        public BulletView CreateBullet(Vector3 position, Vector3 direction)
+        public BulletController GetBullet(Vector3 position, Vector3 direction)
         {
             var bullet = _bullets.Get();
-            ConfigureBullet(bullet, position, direction);
-            return bullet;
+            return ConfigureBullet(bullet, position, direction);
         }
 
-        public void DestroyBullet(BulletView bulletToRelease)
+        public void ReleaseBullet(BulletController bulletController)
         {
-            if (_bulletComponents.TryGetValue(bulletToRelease, out var bulletController))
+            if (_bulletComponents.TryGetValue(bulletController, out var bulletView))
             {
-                bulletController.PositionChanged -= bulletToRelease.Move;
-                _bulletComponents.Remove(bulletToRelease);
-                _bullets.Release(bulletToRelease);
-                
+                bulletController.PositionChanged += bulletView.Move;
+                _bulletComponents.Remove(bulletController);
+                _bullets.Release(bulletView);
+                bulletView.gameObject.SetActive(false);
+
                 _updateProvider.EnqueueUnregister(bulletController);
             }
             else
@@ -65,13 +65,15 @@ namespace Code.Services
         private BulletView InstantiateBullet() => 
             Object.Instantiate(_bulletPrefab, Anchor<BulletView>.Transform).GetComponent<BulletView>();
 
-        private void ConfigureBullet(BulletView bulletView, Vector3 position, Vector3 direction)
+        private BulletController ConfigureBullet(BulletView bulletView, Vector3 position, Vector3 direction)
         {
             var bulletController = new BulletController(new BulletModel(position, direction, _bulletParams.Speed, _bulletParams.Radius), _bulletParams.CollisionLayerMask);
             bulletController.PositionChanged += bulletView.Move;
-            _bulletComponents[bulletView] = bulletController;
+            _bulletComponents[bulletController] = bulletView;
+            bulletView.gameObject.SetActive(true);
             
             _updateProvider.EnqueueRegister(bulletController);
+            return bulletController;
         }
     }
 }
