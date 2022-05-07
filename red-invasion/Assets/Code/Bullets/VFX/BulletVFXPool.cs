@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
-namespace Code.Bullets
+namespace Code.Bullets.VFX
 {
     public class BulletVFXPool
     {

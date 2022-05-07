@@ -1,5 +1,4 @@
 using System;
-using Code.Bullets;
 using Code.Input;
 using Code.Services;
 using Code.States;

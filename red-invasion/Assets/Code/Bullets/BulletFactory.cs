@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Code.Bullets;
 using Code.Common;
+using Code.Services;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace Code.Services
+namespace Code.Bullets
 {
     public class BulletFactory
     {

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Code.Bullets;
+using Code.Bullets.VFX;
 using Code.Enemies;
 using Code.Input;
 using Code.Player;

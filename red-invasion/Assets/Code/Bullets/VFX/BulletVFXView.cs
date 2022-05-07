@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Code.Bullets
+namespace Code.Bullets.VFX
 {
     public class BulletVFXView : MonoBehaviour
     {
