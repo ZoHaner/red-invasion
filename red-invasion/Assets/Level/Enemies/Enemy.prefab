@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 134305513411768812}
   - component: {fileID: 4101397654798893314}
+  - component: {fileID: 2324793242143846382}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
@@ -46,6 +47,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 12
+--- !u!136 &2324793242143846382
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2728106851286654890}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.2
+  m_Height: 0.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.4, z: 0}
 --- !u!1 &7396497051388501200
 GameObject:
   m_ObjectHideFlags: 0
@@ -57,7 +72,6 @@ GameObject:
   - component: {fileID: 3078393612889421188}
   - component: {fileID: 352376076256273084}
   - component: {fileID: 5475160364726732665}
-  - component: {fileID: 5191695631943142420}
   m_Layer: 8
   m_Name: Mesh
   m_TagString: Untagged
@@ -130,17 +144,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &5191695631943142420
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7396497051388501200}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}

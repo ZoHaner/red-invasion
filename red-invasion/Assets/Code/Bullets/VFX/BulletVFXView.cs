@@ -17,7 +17,6 @@ namespace Code.Bullets.VFX
         
         public void OnParticleSystemStopped()
         {
-            Debug.Log("System has stopped!");
             ParticlesStopped?.Invoke(this);
         }
     }

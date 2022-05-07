@@ -36,15 +36,15 @@ namespace Code.Bullets
         {
             foreach (var collider in colliders)
             {
-                PerformActionForCollidedObject(collider.tag);
+                PerformActionForCollidedObject(LayerMask.LayerToName(collider.gameObject.layer));
             }
 
             PerformActionForBullet(bulletPosition);
         }
 
-        private void PerformActionForCollidedObject(string tag)
+        private void PerformActionForCollidedObject(string layerName)
         {
-            if (_objectTagsHandlers.TryGetValue(tag, out var action))
+            if (_objectTagsHandlers.TryGetValue(layerName, out var action))
             {
                 action.Invoke();
             }

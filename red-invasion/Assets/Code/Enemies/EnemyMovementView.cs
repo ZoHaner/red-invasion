@@ -1,10 +1,14 @@
+using System;
+using Code.Damage;
 using Code.Services;
 using UnityEngine;
 
 namespace Code.Enemies
 {
-    public class EnemyMovementView : MonoBehaviour, IUpdatable
+    public class EnemyMovementView : MonoBehaviour, IUpdatable, IHittable
     {
+        public Action<EnemyMovementView> Hitted;
+        
         [SerializeField] private float _speed = 12f;
 
         private Vector3 _leftBorder;
@@ -31,6 +35,11 @@ namespace Code.Enemies
         public void Tick(float deltaTime)
         {
             _enemyMovementController.CalculateNextPosition(_leftBorder, _rightBorder, transform.position, _speed, deltaTime);
+        }
+
+        public void Hit()
+        {
+            Hitted?.Invoke(this);
         }
 
         private void ApplyMovement(Vector3 position) =>

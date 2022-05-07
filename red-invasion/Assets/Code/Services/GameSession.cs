@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Code.Bullets;
 using Code.Bullets.VFX;
+using Code.Damage;
 using Code.Enemies;
 using Code.Input;
 using Code.Player;
@@ -24,6 +25,9 @@ namespace Code.Services
         private BulletsCollisionHandler _bulletsCollisionHandler;
         private BulletVFXPool _bulletVFXPool;
         private EnemyFactory _enemyFactory;
+        private DamageProvider _damageProvider;
+        
+        private EnemyMovementView[] _enemies;
 
         public GameSession(IAssetProvider assetProvider, IUpdateProvider updateProvider, IInputService inputService)
         {
@@ -37,6 +41,7 @@ namespace Code.Services
             _playerPrefab = await _assetProvider.Load<GameObject>(PlayerAddress);
             
             _enemyFactory = new EnemyFactory(_assetProvider, _updateProvider);
+            _enemyFactory.Initialize();
             await _enemyFactory.WarmUp();
 
             _bulletFactory = new BulletFactory(_assetProvider, _updateProvider);
@@ -49,13 +54,30 @@ namespace Code.Services
 
         public void Initialize()
         {
+            _damageProvider = new DamageProvider();
             _bulletsCollisionHandler = new BulletsCollisionHandler(_bulletVFXPool);
             _bulletsCollisionHandler.SetBulletCollisionCallback(SpawnBulletVFX);
+            // _bulletsCollisionHandler.AddCollisionHandler("Enemies", OnEnemyHit);
+        }
+
+        public void Cleanup()
+        {
+            _enemies = null;
+        }
+
+        private void OnEnemyHit(EnemyMovementView enemyMovementView)
+        {
+            enemyMovementView.Hitted -= OnEnemyHit;
+            _enemyFactory.ReleaseEnemy(enemyMovementView);
         }
 
         public void Start()
         {
-            _enemyFactory.SpawnEnemiesAtSpawnPoints();
+            _enemies = _enemyFactory.SpawnEnemiesAtSpawnPoints();
+            foreach (var enemy in _enemies)
+            {
+                enemy.Hitted += OnEnemyHit;
+            }
         }
 
         public void SpawnPlayer()
@@ -97,6 +119,7 @@ namespace Code.Services
             var bulletController = _bulletFactory.GetBullet(position, direction);
 
             bulletController.Collided += OnBulletCollided;
+            bulletController.Collided += _damageProvider.TryApplyHit;
             bulletController.Collided += _bulletsCollisionHandler.OnBulletCollided;
         }
 
@@ -115,6 +138,7 @@ namespace Code.Services
         private void OnBulletCollided(BulletController bulletController, Vector3 bulletPosition, Collider[] colliders)
         {
             bulletController.Collided -= OnBulletCollided;
+            bulletController.Collided -= _damageProvider.TryApplyHit;
             bulletController.Collided -= _bulletsCollisionHandler.OnBulletCollided;
 
             _bulletFactory.ReleaseBullet(bulletController);

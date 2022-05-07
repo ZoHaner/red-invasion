@@ -8,7 +8,7 @@ namespace Code.Bullets
     {
         public Action<Vector3> PositionChanged;
         public Action<BulletController, Vector3, Collider[]> Collided;
-        
+
         private readonly BulletModel _model;
         private readonly int _bulletCollisionMask;
 
@@ -33,8 +33,8 @@ namespace Code.Bullets
         private void CheckCollisions()
         {
             var collisions = Physics.OverlapSphere(_model.Position, _model.Radius, _bulletCollisionMask, QueryTriggerInteraction.Ignore);
-            
-            if (collisions.Length != 0) 
+
+            if (collisions.Length != 0)
                 Collided?.Invoke(this, _model.Position, collisions);
         }
     }

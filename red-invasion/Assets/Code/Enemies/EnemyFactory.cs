@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Code.Services;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace Code.Enemies
 {
@@ -15,6 +16,8 @@ namespace Code.Enemies
         private EnemySpawnParams[] _spawnPoints;
         private GameObject _enemyPrefab;
 
+        private ObjectPool<EnemyMovementView> _enemyPool;
+
         public EnemyFactory(IAssetProvider assetProvider, IUpdateProvider updateProvider)
         {
             _assetProvider = assetProvider;
@@ -27,10 +30,23 @@ namespace Code.Enemies
             _enemyPrefab = await _assetProvider.Load<GameObject>(EnemyAddress);
         }
 
-        public void SpawnEnemiesAtSpawnPoints()
+        public void Initialize()
         {
-            foreach (var spawnPoint in _spawnPoints) 
-                SpawnEnemy(spawnPoint, _enemyPrefab);
+            _enemyPool = new ObjectPool<EnemyMovementView>(InstantiateEnemy);
+        }
+
+        private EnemyMovementView InstantiateEnemy() => 
+            Object.Instantiate(_enemyPrefab).GetComponent<EnemyMovementView>();
+
+        public EnemyMovementView[] SpawnEnemiesAtSpawnPoints()
+        {
+            var enemies = new EnemyMovementView[_spawnPoints.Length];
+            for (var i = 0; i < _spawnPoints.Length; i++)
+            {
+                enemies[i] = SpawnEnemy(_spawnPoints[i]);
+            }
+
+            return enemies;
         }
 
         private async Task<EnemySpawnParams[]> GetSpawnPoints()
@@ -39,16 +55,21 @@ namespace Code.Enemies
             return holder.SpawnPoints;
         }
 
-        private void SpawnEnemy(EnemySpawnParams enemyParams, GameObject prefab)
+        private EnemyMovementView SpawnEnemy(EnemySpawnParams enemyParams)
         {
-            var enemy = Object.Instantiate(prefab, enemyParams.SpawnPosition, enemyParams.SpawnRotation);
-            var enemyMovement = enemy.GetComponent<EnemyMovementView>();
-            enemyMovement.Construct(enemyParams.LeftMoveBorder, enemyParams.RightMoveBorder, enemyParams.Speed);
-            enemyMovement.Initialize();
-            RegisterUpdatableObject(enemyMovement);
+            var enemyView = _enemyPool.Get();
+            enemyView.transform.SetPositionAndRotation(enemyParams.SpawnPosition, enemyParams.SpawnRotation);
+            enemyView.Construct(enemyParams.LeftMoveBorder, enemyParams.RightMoveBorder, enemyParams.Speed);
+            enemyView.Initialize();
+            enemyView.gameObject.SetActive(true);
+            _updateProvider.EnqueueRegister(enemyView);
+            return enemyView;
         }
 
-        private void RegisterUpdatableObject(IUpdatable updatable) =>
-            _updateProvider.EnqueueRegister(updatable);
+        public void ReleaseEnemy(EnemyMovementView enemyView)
+        {
+            _updateProvider.EnqueueUnregister(enemyView);
+            enemyView.gameObject.SetActive(false);
+        }
     }
 }
