@@ -35,27 +35,27 @@ namespace Code.Enemies
             _enemyPool = new ObjectPool<EnemyMovementView>(InstantiateEnemy);
         }
 
-        private EnemyMovementView InstantiateEnemy() => 
-            Object.Instantiate(_enemyPrefab).GetComponent<EnemyMovementView>();
-
         public EnemyMovementView[] SpawnEnemiesAtSpawnPoints()
         {
             var enemies = new EnemyMovementView[_spawnPoints.Length];
             for (var i = 0; i < _spawnPoints.Length; i++)
             {
-                enemies[i] = SpawnEnemy(_spawnPoints[i]);
+                enemies[i] = ConfigureEnemy(_spawnPoints[i]);
             }
 
             return enemies;
         }
 
-        private async Task<EnemySpawnParams[]> GetSpawnPoints()
+        public void ReleaseEnemy(EnemyMovementView enemyView)
         {
-            var holder = await _assetProvider.Load<EnemiesPointsHolder>(EnemiesPointsHolderAddress);
-            return holder.SpawnPoints;
+            _updateProvider.EnqueueUnregister(enemyView);
+            enemyView.gameObject.SetActive(false);
         }
 
-        private EnemyMovementView SpawnEnemy(EnemySpawnParams enemyParams)
+        private EnemyMovementView InstantiateEnemy() => 
+            Object.Instantiate(_enemyPrefab).GetComponent<EnemyMovementView>();
+
+        private EnemyMovementView ConfigureEnemy(EnemySpawnParams enemyParams)
         {
             var enemyView = _enemyPool.Get();
             enemyView.transform.SetPositionAndRotation(enemyParams.SpawnPosition, enemyParams.SpawnRotation);
@@ -66,10 +66,10 @@ namespace Code.Enemies
             return enemyView;
         }
 
-        public void ReleaseEnemy(EnemyMovementView enemyView)
+        private async Task<EnemySpawnParams[]> GetSpawnPoints()
         {
-            _updateProvider.EnqueueUnregister(enemyView);
-            enemyView.gameObject.SetActive(false);
+            var holder = await _assetProvider.Load<EnemiesPointsHolder>(EnemiesPointsHolderAddress);
+            return holder.SpawnPoints;
         }
     }
 }

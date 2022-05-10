@@ -7,10 +7,10 @@ namespace Code.Player
     {
         public Action<Vector3, Vector3> Shoot;
 
-        public void Tick(bool isAttackButtonPressed, Vector3 gunTipPosition, Vector3 gunTipForward)
+        public void Tick(bool isAttackButtonPressed, Vector3 shootPosition, Vector3 shootDirection)
         {
             if (isAttackButtonPressed)
-                Shoot?.Invoke(gunTipPosition, gunTipForward);
+                Shoot?.Invoke(shootPosition, shootDirection);
         }
     }
 }
