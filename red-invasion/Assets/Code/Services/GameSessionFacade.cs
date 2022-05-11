@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using Code.Areas;
 using Code.Bullets;
 using Code.Bullets.VFX;
 using Code.Damage;
@@ -10,8 +12,14 @@ namespace Code.Services
 {
     public class GameSessionFacade : IGameSession
     {
+        public Action WinGame { get; set; }
+        public Action LooseGame { get; set; }
+
         private const string PlayerBulletParamsAddress = "Player Bullet Parameters";
         private const string EnemyBulletParamsAddress = "Enemy Bullet Parameters";
+
+        private const string WinAreaBoundsAddress = "Win Area Bounds";
+        private const string LooseAreaBoundsAddress = "Loose Area Bounds";
 
         private readonly IAssetProvider _assetProvider;
         private readonly IUpdateProvider _updateProvider;
@@ -31,6 +39,9 @@ namespace Code.Services
         private DamageProvider _damageProvider;
         private BulletSpawner _playerBulletSpawner;
         private BulletSpawner _enemyBulletSpawner;
+
+        private AreaEnteringTracker _winAreaEnteringTracker;
+        private AreaEnteringTracker _looseAreaEnteringTracker;
 
         public GameSessionFacade(IAssetProvider assetProvider, IUpdateProvider updateProvider, IInputService inputService)
         {
@@ -60,6 +71,12 @@ namespace Code.Services
             _bulletVFXPool = new BulletVFXPool(_assetProvider);
             _bulletVFXPool.Initialize();
             await _bulletVFXPool.WarmUp();
+
+            _winAreaEnteringTracker = new AreaEnteringTracker(WinAreaBoundsAddress, _assetProvider);
+            await _winAreaEnteringTracker.Warmup();
+
+            _looseAreaEnteringTracker = new AreaEnteringTracker(LooseAreaBoundsAddress, _assetProvider);
+            await _looseAreaEnteringTracker.Warmup();
         }
 
         public void Initialize()
@@ -87,12 +104,20 @@ namespace Code.Services
             _enemyBulletFactory.BulletReleased += _bulletsCollisionHandler.UnsubscribeFromBulletCollidedEvent;
             _playerBulletFactory.BulletCreated += _bulletsCollisionHandler.SubscribeOnBulletCollidedEvent;
             _playerBulletFactory.BulletReleased += _bulletsCollisionHandler.UnsubscribeFromBulletCollidedEvent;
+
+            _winAreaEnteringTracker.OnAreaEntered += () => WinGame?.Invoke();
+            _looseAreaEnteringTracker.OnAreaEntered += () => LooseGame?.Invoke();
+            
+            _updateProvider.EnqueueRegister(_winAreaEnteringTracker);
+            _updateProvider.EnqueueRegister(_looseAreaEnteringTracker);
         }
 
         public void SpawnPlayer()
         {
             var player = _playerFactory.SpawnPlayer();
             _enemyFactory.SetPlayerTransform(player.transform);
+            _winAreaEnteringTracker.SetTargetTransform(player.transform);
+            _looseAreaEnteringTracker.SetTargetTransform(player.transform);
         }
 
         public void SpawnEnemies()
@@ -114,6 +139,12 @@ namespace Code.Services
             _enemyBulletFactory.BulletReleased -= _bulletsCollisionHandler.UnsubscribeFromBulletCollidedEvent;
             _playerBulletFactory.BulletCreated -= _bulletsCollisionHandler.SubscribeOnBulletCollidedEvent;
             _playerBulletFactory.BulletReleased -= _bulletsCollisionHandler.UnsubscribeFromBulletCollidedEvent;
+            
+            _winAreaEnteringTracker.OnAreaEntered -= () => WinGame?.Invoke();
+            _looseAreaEnteringTracker.OnAreaEntered -= () => LooseGame?.Invoke();
+            
+            _updateProvider.EnqueueUnregister(_winAreaEnteringTracker);
+            _updateProvider.EnqueueUnregister(_looseAreaEnteringTracker);
         }
     }
 }

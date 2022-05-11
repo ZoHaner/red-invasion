@@ -1,4 +1,5 @@
 using Code.Services;
+using UnityEngine;
 
 namespace Code.States
 {
@@ -15,16 +16,39 @@ namespace Code.States
 
         public async void Enter()
         {
+            SubscribeOnEvents();
+            
             await _session.WarmUp();
             _session.Initialize();
             _session.SpawnPlayer();
             _session.SpawnEnemies();
 
-            _stateMachine.SetState(typeof(GameState));
+            // _stateMachine.SetState(typeof(GameState));
         }
 
-        public void Exit()
+        public void Exit() => 
+            UnsubscribeFromEvents();
+
+        private void MoveToWinScreen()
         {
+            Debug.Log("Win");
+        }
+
+        private void MoveToLooseScreen()
+        {
+            Debug.Log("Loose");
+        }
+
+        private void SubscribeOnEvents()
+        {
+            _session.WinGame += MoveToWinScreen;
+            _session.LooseGame += MoveToLooseScreen;
+        }
+
+        private void UnsubscribeFromEvents()
+        {
+            _session.WinGame -= MoveToWinScreen;
+            _session.LooseGame -= MoveToLooseScreen;
         }
     }
 }
