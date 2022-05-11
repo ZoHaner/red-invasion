@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Code.Player;
 using Code.Services;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -12,16 +13,19 @@ namespace Code.Enemies
 
         private readonly IAssetProvider _assetProvider;
         private readonly IUpdateProvider _updateProvider;
+        private readonly GunFactory _gunFactory;
 
         private EnemySpawnParams[] _spawnPoints;
         private GameObject _enemyPrefab;
 
         private ObjectPool<EnemyMovementView> _enemyPool;
+        private Transform _playerTransform;
 
-        public EnemyFactory(IAssetProvider assetProvider, IUpdateProvider updateProvider)
+        public EnemyFactory(IAssetProvider assetProvider, IUpdateProvider updateProvider, GunFactory gunFactory)
         {
             _assetProvider = assetProvider;
             _updateProvider = updateProvider;
+            _gunFactory = gunFactory;
         }
 
         public async Task WarmUp()
@@ -34,6 +38,9 @@ namespace Code.Enemies
         {
             _enemyPool = new ObjectPool<EnemyMovementView>(InstantiateEnemy);
         }
+
+        public void SetPlayerTransform(Transform playerTransform) =>
+            _playerTransform = playerTransform;
 
         public EnemyMovementView[] SpawnEnemiesAtSpawnPoints()
         {
@@ -52,7 +59,7 @@ namespace Code.Enemies
             enemyView.gameObject.SetActive(false);
         }
 
-        private EnemyMovementView InstantiateEnemy() => 
+        private EnemyMovementView InstantiateEnemy() =>
             Object.Instantiate(_enemyPrefab).GetComponent<EnemyMovementView>();
 
         private EnemyMovementView ConfigureEnemy(EnemySpawnParams enemyParams)
@@ -61,6 +68,9 @@ namespace Code.Enemies
             enemyView.transform.SetPositionAndRotation(enemyParams.SpawnPosition, enemyParams.SpawnRotation);
             enemyView.Construct(enemyParams.LeftMoveBorder, enemyParams.RightMoveBorder, enemyParams.Speed);
             enemyView.Initialize();
+
+            _gunFactory.ConfigureEnemyGun(enemyView.gameObject, enemyParams.ShootingRate, _playerTransform);
+
             enemyView.gameObject.SetActive(true);
             _updateProvider.EnqueueRegister(enemyView);
             return enemyView;

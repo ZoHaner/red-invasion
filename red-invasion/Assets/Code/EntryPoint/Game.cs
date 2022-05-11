@@ -23,9 +23,9 @@ namespace Code.EntryPoint
 
             var assetProvider = new AssetProvider();
             var updateProvider = CreateUpdateProvider();
-            var inputService = new StandaloneInputService();
+            var inputService = new PlayerInputService();
 
-            var session = new GameSession(assetProvider, updateProvider, inputService);
+            var session = new GameSessionFacade(assetProvider, updateProvider, inputService);
             
             _stateMachine.AddState(typeof(LoadLevelState), new LoadLevelState(_stateMachine, session));
             _stateMachine.AddState(typeof(GameState), new GameState(_stateMachine, session));

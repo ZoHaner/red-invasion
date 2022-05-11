@@ -22,7 +22,8 @@ namespace Code.Enemies
                     sp.EnemyWalkingRange.RightBorder,
                     sp.transform.position,
                     sp.transform.rotation,
-                    sp.EnemySpeed);
+                    sp.EnemySpeed,
+                    sp.ShootingRate);
             }
         }
     }

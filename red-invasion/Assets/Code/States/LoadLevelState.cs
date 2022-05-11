@@ -18,7 +18,7 @@ namespace Code.States
             await _session.WarmUp();
             _session.Initialize();
             _session.SpawnPlayer();
-            _session.Start();
+            _session.SpawnEnemies();
 
             _stateMachine.SetState(typeof(GameState));
         }

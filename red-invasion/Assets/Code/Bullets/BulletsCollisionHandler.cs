@@ -17,6 +17,12 @@ namespace Code.Bullets
         private Dictionary<string, Action> _objectTagsHandlers = new Dictionary<string, Action>();
         private Action<Vector3> _bulletCollisionCallback;
 
+        public void SubscribeOnBulletCollidedEvent(BulletController bulletController) => 
+            bulletController.Collided += OnBulletCollided;
+
+        public void UnsubscribeFromBulletCollidedEvent(BulletController bulletController) => 
+            bulletController.Collided -= OnBulletCollided;
+
         public void AddCollisionHandler(string tag, Action callback)
         {
             if (_objectTagsHandlers.ContainsKey(tag))
@@ -27,12 +33,10 @@ namespace Code.Bullets
             _objectTagsHandlers[tag] = callback;
         }
 
-        public void SetBulletCollisionCallback(Action<Vector3> callback)
-        {
+        public void SetBulletCollisionCallback(Action<Vector3> callback) => 
             _bulletCollisionCallback = callback;
-        }
-        
-        public void OnBulletCollided(BulletController bulletController, Vector3 bulletPosition, Collider[] colliders)
+
+        private void OnBulletCollided(BulletController bulletController, Vector3 bulletPosition, Collider[] colliders)
         {
             foreach (var collider in colliders)
             {
@@ -44,15 +48,11 @@ namespace Code.Bullets
 
         private void PerformActionForCollidedObject(string layerName)
         {
-            if (_objectTagsHandlers.TryGetValue(layerName, out var action))
-            {
+            if (_objectTagsHandlers.TryGetValue(layerName, out var action)) 
                 action.Invoke();
-            }
         }
 
-        private void PerformActionForBullet(Vector3 bulletPosition)
-        {
+        private void PerformActionForBullet(Vector3 bulletPosition) => 
             _bulletCollisionCallback.Invoke(bulletPosition);
-        }
     }
 }

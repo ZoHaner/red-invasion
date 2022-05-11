@@ -1,14 +1,19 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Code.Common;
 using Code.Services;
 using UnityEngine;
 using UnityEngine.Pool;
+using Object = UnityEngine.Object;
 
 namespace Code.Bullets
 {
     public class BulletFactory
     {
+        public Action<BulletController> BulletCreated;
+        public Action<BulletController> BulletReleased;
+        
         private const string BulletParamsAddress = "Bullet Parameters";
 
         private readonly IAssetProvider _assetProvider;
@@ -41,7 +46,9 @@ namespace Code.Bullets
         public BulletController GetBullet(Vector3 position, Vector3 direction)
         {
             var bullet = _bullets.Get();
-            return ConfigureBullet(bullet, position, direction);
+            var bulletController = ConfigureBullet(bullet, position, direction);
+            BulletCreated?.Invoke(bulletController);
+            return bulletController;
         }
 
         public void ReleaseBullet(BulletController bulletController)
@@ -53,6 +60,8 @@ namespace Code.Bullets
                 _bullets.Release(bulletView);
                 bulletView.gameObject.SetActive(false);
 
+                BulletReleased?.Invoke(bulletController);
+                
                 _updateProvider.EnqueueUnregister(bulletController);
             }
             else

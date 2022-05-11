@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 134305513411768812}
   - component: {fileID: 4101397654798893314}
+  - component: {fileID: 2339863258962071232}
   - component: {fileID: 2324793242143846382}
   m_Layer: 8
   m_Name: Enemy
@@ -47,6 +48,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 12
+--- !u!114 &2339863258962071232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2728106851286654890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9c65beb52b245bba21fe009775a44a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShootingPoint: {fileID: 3078393612889421188}
 --- !u!136 &2324793242143846382
 CapsuleCollider:
   m_ObjectHideFlags: 0

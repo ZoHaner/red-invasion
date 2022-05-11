@@ -19,6 +19,6 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   CollisionLayerMask:
     serializedVersion: 2
-    m_Bits: 960
+    m_Bits: 704
   Speed: 15
   Radius: 0.075

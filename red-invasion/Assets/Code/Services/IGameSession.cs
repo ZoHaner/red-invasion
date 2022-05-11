@@ -6,7 +6,7 @@ namespace Code.Services
     {
         Task WarmUp();
         void SpawnPlayer();
-        void Start();
+        void SpawnEnemies();
         void Initialize();
     }
 }

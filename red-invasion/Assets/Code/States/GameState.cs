@@ -5,12 +5,12 @@ namespace Code.States
     public class GameState : IState
     {
         private readonly StateMachine _stateMachine;
-        private readonly GameSession _session;
+        private readonly GameSessionFacade _sessionFacade;
 
-        public GameState(StateMachine stateMachine, GameSession session)
+        public GameState(StateMachine stateMachine, GameSessionFacade sessionFacade)
         {
             _stateMachine = stateMachine;
-            _session = session;
+            _sessionFacade = sessionFacade;
         }
 
         public void Enter()

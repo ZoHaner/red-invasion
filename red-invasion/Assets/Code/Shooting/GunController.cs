@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Code.Player
+namespace Code.Shooting
 {
     public class GunController 
     {
