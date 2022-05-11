@@ -1,4 +1,5 @@
 using System;
+using Code.Enemies;
 using Code.Input;
 using Code.Services;
 using Code.Shooting;
@@ -29,6 +30,11 @@ namespace Code.Player
             _updateProvider.EnqueueRegister(enemyGunView);
 
             GunCreated?.Invoke(gunController);
+        }
+
+        public void DisableEnemyGun(EnemyGunView enemyGunView)
+        {
+            _updateProvider.EnqueueUnregister(enemyGunView);
         }
 
         private float GetRandomValue()

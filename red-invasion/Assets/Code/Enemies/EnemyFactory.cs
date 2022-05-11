@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Code.Player;
 using Code.Services;
+using Code.Shooting;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -55,6 +56,7 @@ namespace Code.Enemies
 
         public void ReleaseEnemy(EnemyMovementView enemyView)
         {
+            _gunFactory.DisableEnemyGun(enemyView.GetComponent<EnemyGunView>());
             _updateProvider.EnqueueUnregister(enemyView);
             enemyView.gameObject.SetActive(false);
         }
