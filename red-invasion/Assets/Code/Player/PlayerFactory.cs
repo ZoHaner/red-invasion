@@ -15,11 +15,11 @@ namespace Code.Player
         private readonly IInputService _inputService;
         private readonly IUpdateProvider _updateProvider;
         private readonly IAssetProvider _assetProvider;
-        private readonly GunFactory _gunFactory;
+        private readonly PlayerGunFactory _gunFactory;
 
         private Action<GameObject> _playerCreated;
 
-        public PlayerFactory(IInputService inputService, IUpdateProvider updateProvider, IAssetProvider assetProvider, GunFactory gunFactory)
+        public PlayerFactory(IInputService inputService, IUpdateProvider updateProvider, IAssetProvider assetProvider, PlayerGunFactory gunFactory)
         {
             _inputService = inputService;
             _updateProvider = updateProvider;

@@ -13,7 +13,7 @@ namespace Code.Enemies
 
         private readonly IAssetProvider _assetProvider;
         private readonly IUpdateProvider _updateProvider;
-        private readonly GunFactory _gunFactory;
+        private readonly EnemyGunFactory _gunFactory;
 
         private EnemySpawnParams[] _spawnPoints;
         private GameObject _enemyPrefab;
@@ -21,7 +21,7 @@ namespace Code.Enemies
         private ObjectPool<EnemyMovementView> _enemyPool;
         private Transform _playerTransform;
 
-        public EnemyFactory(IAssetProvider assetProvider, IUpdateProvider updateProvider, GunFactory gunFactory)
+        public EnemyFactory(IAssetProvider assetProvider, IUpdateProvider updateProvider, EnemyGunFactory gunFactory)
         {
             _assetProvider = assetProvider;
             _updateProvider = updateProvider;

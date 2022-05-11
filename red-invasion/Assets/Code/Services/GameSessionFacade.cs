@@ -15,16 +15,16 @@ namespace Code.Services
         private readonly IInputService _inputService;
 
         private BulletsCollisionHandler _bulletsCollisionHandler;
-        private BulletVFXPool _bulletVFXPool;
         private EnemyFactory _enemyFactory;
         private BulletFactory _bulletFactory;
-        private DamageProvider _damageProvider;
-
         private PlayerFactory _playerFactory;
-        private GunFactory _gunFactory;
+        private PlayerGunFactory _playerGunFactory;
+        private EnemyGunFactory _enemyGunFactory;
         private BulletSpawner _bulletSpawner;
         private EnemySpawner _enemySpawner;
         private BulletVFXSpawner _bulletVFXSpawner;
+        private BulletVFXPool _bulletVFXPool;
+        private DamageProvider _damageProvider;
 
         public GameSessionFacade(IAssetProvider assetProvider, IUpdateProvider updateProvider, IInputService inputService)
         {
@@ -35,12 +35,13 @@ namespace Code.Services
 
         public async Task WarmUp()
         {
-            _gunFactory = new GunFactory(_inputService, _updateProvider);
+            _playerGunFactory = new PlayerGunFactory(_inputService, _updateProvider);
+            _enemyGunFactory = new EnemyGunFactory(_updateProvider);
 
-            _playerFactory = new PlayerFactory(_inputService, _updateProvider, _assetProvider, _gunFactory);
+            _playerFactory = new PlayerFactory(_inputService, _updateProvider, _assetProvider, _playerGunFactory);
             await _playerFactory.WarmUp();
 
-            _enemyFactory = new EnemyFactory(_assetProvider, _updateProvider, _gunFactory);
+            _enemyFactory = new EnemyFactory(_assetProvider, _updateProvider, _enemyGunFactory);
             _enemyFactory.Initialize();
             await _enemyFactory.WarmUp();
 
@@ -55,7 +56,7 @@ namespace Code.Services
         public void Initialize()
         {
             _bulletVFXSpawner = new BulletVFXSpawner(_bulletVFXPool);
-            
+
             _damageProvider = new DamageProvider();
             _bulletsCollisionHandler = new BulletsCollisionHandler(_bulletVFXPool);
             _bulletsCollisionHandler.SetBulletCollisionCallback(_bulletVFXSpawner.SpawnBulletVFX);
@@ -63,7 +64,8 @@ namespace Code.Services
             _enemySpawner = new EnemySpawner(_enemyFactory);
 
             _bulletSpawner = new BulletSpawner(_bulletFactory);
-            _gunFactory.GunCreated += _bulletSpawner.SubscribeOnGunShootEvent;
+            _playerGunFactory.GunCreated += _bulletSpawner.SubscribeOnGunShootEvent;
+            _enemyGunFactory.GunCreated += _bulletSpawner.SubscribeOnGunShootEvent;
 
             _bulletFactory.BulletCreated += _damageProvider.SubscribeOnBulletCollidedEvent;
             _bulletFactory.BulletReleased += _damageProvider.UnsubscribeFromBulletCollidedEvent;
@@ -85,6 +87,9 @@ namespace Code.Services
 
         public void Cleanup()
         {
+            _playerGunFactory.GunCreated -= _bulletSpawner.SubscribeOnGunShootEvent;
+            _enemyGunFactory.GunCreated -= _bulletSpawner.SubscribeOnGunShootEvent;
+
             _bulletFactory.BulletCreated -= _damageProvider.SubscribeOnBulletCollidedEvent;
             _bulletFactory.BulletReleased -= _damageProvider.UnsubscribeFromBulletCollidedEvent;
 
