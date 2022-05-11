@@ -10,24 +10,34 @@ namespace Code.Player
         private const float HitDecreaseCoefficient = 0.9f;
 
         private Vector3 _moveVector;
-        private Vector3 _jumpVector;
         private Vector3 _hitVector;
-        private bool _isGrounded;
 
-        public void Tick(PlayerMovementParams moveParams, Vector3 groundCheckerPosition, Vector3 right, Vector3 forward, Vector2 inputVector, bool jump, float deltaTime)
+        private float _groundedTimer;
+        private float _verticalVelocity;
+
+        public void AddForce(Vector3 hitDirection, float forceValue) =>
+            _hitVector += hitDirection * forceValue;
+
+        public void Tick(PlayerMovementParams moveParams, Vector3 right, Vector3 forward, Vector2 inputVector, bool jump, bool groundedPlayer, float deltaTime)
         {
             CalculateMoveVector(right, forward, moveParams.Speed, inputVector, deltaTime);
-            CheckIfPlayerOnGround(moveParams, groundCheckerPosition);
-            ResetVerticalVelocityIfOnGround();
             DecreaseHitForce();
+            SetGroundedCooldown(groundedPlayer, deltaTime);
+            ResetVerticalVelocityIfOnGround(groundedPlayer);
+            ApplyGravity(moveParams.Gravity, deltaTime);
+            if (jump)
+            {
+                CalculateVerticalVelocity(moveParams.JumpHeight, moveParams.Gravity);
+            }
 
-            if (CanJump(jump))
-                ApplyJump(moveParams, deltaTime);
-
-            ApplyGravity(moveParams, deltaTime);
-
+            ApplyVerticalVelocity();
             DeltaMoved?.Invoke(_moveVector);
-            DeltaMoved?.Invoke(_jumpVector);
+        }
+
+        private void CalculateMoveVector(Vector3 right, Vector3 forward, float speed, Vector2 inputVector, float deltaTime)
+        {
+            Vector3 move = right * inputVector.x + forward * inputVector.y;
+            _moveVector = (move * speed + _hitVector) * deltaTime;
         }
 
         private void DecreaseHitForce()
@@ -41,36 +51,34 @@ namespace Code.Player
                 _hitVector = Vector3.zero;
         }
 
-        private void CalculateMoveVector(Vector3 right, Vector3 forward, float speed, Vector2 inputVector, float deltaTime)
+        private void SetGroundedCooldown(bool groundedPlayer, float deltaTime)
         {
-            Vector3 move = right * inputVector.x + forward * inputVector.y;
-            _moveVector = (move * speed + _hitVector) * deltaTime;
+            if (groundedPlayer)
+                _groundedTimer = 1f;
+
+            if (_groundedTimer > 0)
+                _groundedTimer -= deltaTime;
         }
 
-        private void CheckIfPlayerOnGround(PlayerMovementParams moveParams, Vector3 groundCheckerPosition)
+        private void ResetVerticalVelocityIfOnGround(bool groundedPlayer)
         {
-            _isGrounded = Physics.CheckSphere(
-                groundCheckerPosition, moveParams.GroundDistance, moveParams.GroundLayer, QueryTriggerInteraction.Ignore);
+            if (groundedPlayer && _verticalVelocity < 0)
+                _verticalVelocity = 0f;
         }
 
-        private void ResetVerticalVelocityIfOnGround()
+        private void ApplyGravity(float gravityValue, float deltaTime) =>
+            _verticalVelocity -= gravityValue * deltaTime;
+
+        private void CalculateVerticalVelocity(float jumpHeight, float gravityValue)
         {
-            if (_isGrounded && _jumpVector.y < 0)
-                _jumpVector.y = 0f;
+            if (_groundedTimer > 0)
+            {
+                _groundedTimer = 0;
+                _verticalVelocity += Mathf.Sqrt(jumpHeight * 2 * gravityValue);
+            }
         }
 
-        private bool CanJump(bool jumpInput) =>
-            jumpInput && _isGrounded;
-
-        private void ApplyJump(PlayerMovementParams moveParams, float deltaTime) =>
-            _jumpVector.y += Mathf.Sqrt(moveParams.JumpHeight * -2f * moveParams.Gravity) * deltaTime;
-
-        private void ApplyGravity(PlayerMovementParams moveParams, float deltaTime) =>
-            _jumpVector.y += moveParams.Gravity * deltaTime * deltaTime;
-
-        public void AddForce(Vector3 hitDirection, float forceValue)
-        {
-            _hitVector += hitDirection * forceValue;
-        }
+        private void ApplyVerticalVelocity() => 
+            _moveVector.y = _verticalVelocity;
     }
 }

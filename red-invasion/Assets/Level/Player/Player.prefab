@@ -1,36 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2689649364750185015
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8538638851620578886}
-  m_Layer: 9
-  m_Name: GroundChecker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8538638851620578886
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2689649364750185015}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.089, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7825613904641749450}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3954189696415893135
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,7 +279,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7825613904065772231}
-  - {fileID: 8538638851620578886}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -356,13 +324,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMovementParams:
     Speed: 4
-    JumpHeight: 1.5
-    Gravity: -29
-    GroundDistance: 0.2
+    JumpHeight: 0.01
+    Gravity: 0.41
+    GroundDistance: 0.05
     GroundLayer:
       serializedVersion: 2
       m_Bits: 64
-  GroundChecker: {fileID: 8538638851620578886}
+  GroundChecker: {fileID: 0}
 --- !u!143 &8963329842736452140
 CharacterController:
   m_ObjectHideFlags: 0

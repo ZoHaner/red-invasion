@@ -8,7 +8,6 @@ namespace Code.Player
     public class PlayerMovementView : MonoBehaviour, IUpdatable, IHittable
     {
         [SerializeField] private PlayerMovementParams playerMovementParams;
-        [SerializeField] private Transform GroundChecker;
 
         private IInputService _inputService;
         private PlayerMovementController _playerMovementController;
@@ -34,23 +33,19 @@ namespace Code.Player
 
             _playerMovementController.Tick(
                 playerMovementParams,
-                GroundChecker.position,
                 transform.right,
                 transform.forward,
                 moveVector,
                 jump,
+                _characterController.isGrounded,
                 deltaTime);
         }
 
-        public void Hit(Vector3 hitDirection)
-        {
+        public void Hit(Vector3 hitDirection) => 
             _playerMovementController.AddForce(hitDirection, 50f);
-        }
 
-        private void ApplyMovement(Vector3 deltaMove)
-        {
+        private void ApplyMovement(Vector3 deltaMove) => 
             _characterController.Move(deltaMove);
-        }
 
         private void SubscribeOnEvents() =>
             _playerMovementController.DeltaMoved += ApplyMovement;
