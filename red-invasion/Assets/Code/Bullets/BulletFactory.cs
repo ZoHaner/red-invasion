@@ -13,9 +13,8 @@ namespace Code.Bullets
     {
         public Action<BulletController> BulletCreated;
         public Action<BulletController> BulletReleased;
-        
-        private const string BulletParamsAddress = "Bullet Parameters";
 
+        private readonly string _bulletParamsAddress;
         private readonly IAssetProvider _assetProvider;
         private readonly IUpdateProvider _updateProvider;
 
@@ -25,8 +24,9 @@ namespace Code.Bullets
         private Dictionary<BulletController, BulletView> _bulletComponents = new Dictionary<BulletController, BulletView>();
         private BulletParams _bulletParams;
 
-        public BulletFactory(IAssetProvider assetProvider, IUpdateProvider updateProvider)
+        public BulletFactory(string bulletParamsAddress, IAssetProvider assetProvider, IUpdateProvider updateProvider)
         {
+            _bulletParamsAddress = bulletParamsAddress;
             _assetProvider = assetProvider;
             _updateProvider = updateProvider;
             Initialize();
@@ -39,7 +39,7 @@ namespace Code.Bullets
 
         public async Task WarmUp()
         {
-            _bulletParams = await _assetProvider.Load<BulletParams>(BulletParamsAddress);
+            _bulletParams = await _assetProvider.Load<BulletParams>(_bulletParamsAddress);
             _bulletPrefab = await _assetProvider.Load<GameObject>(_bulletParams.PrefabReference);
         }
 

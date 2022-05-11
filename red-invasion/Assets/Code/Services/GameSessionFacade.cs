@@ -10,13 +10,17 @@ namespace Code.Services
 {
     public class GameSessionFacade : IGameSession
     {
+        private const string PlayerBulletParamsAddress = "Player Bullet Parameters";
+        private const string EnemyBulletParamsAddress = "Enemy Bullet Parameters";
+
         private readonly IAssetProvider _assetProvider;
         private readonly IUpdateProvider _updateProvider;
         private readonly IInputService _inputService;
 
         private BulletsCollisionHandler _bulletsCollisionHandler;
         private EnemyFactory _enemyFactory;
-        private BulletFactory _bulletFactory;
+        private BulletFactory _playerBulletFactory;
+        private BulletFactory _enemyBulletFactory;
         private PlayerFactory _playerFactory;
         private PlayerGunFactory _playerGunFactory;
         private EnemyGunFactory _enemyGunFactory;
@@ -25,6 +29,8 @@ namespace Code.Services
         private BulletVFXSpawner _bulletVFXSpawner;
         private BulletVFXPool _bulletVFXPool;
         private DamageProvider _damageProvider;
+        private BulletSpawner _playerBulletSpawner;
+        private BulletSpawner _enemyBulletSpawner;
 
         public GameSessionFacade(IAssetProvider assetProvider, IUpdateProvider updateProvider, IInputService inputService)
         {
@@ -44,9 +50,12 @@ namespace Code.Services
             _enemyFactory = new EnemyFactory(_assetProvider, _updateProvider, _enemyGunFactory);
             _enemyFactory.Initialize();
             await _enemyFactory.WarmUp();
+            _playerBulletFactory = new BulletFactory(PlayerBulletParamsAddress, _assetProvider, _updateProvider);
 
-            _bulletFactory = new BulletFactory(_assetProvider, _updateProvider);
-            await _bulletFactory.WarmUp();
+            await _playerBulletFactory.WarmUp();
+
+            _enemyBulletFactory = new BulletFactory(EnemyBulletParamsAddress, _assetProvider, _updateProvider);
+            await _enemyBulletFactory.WarmUp();
 
             _bulletVFXPool = new BulletVFXPool(_assetProvider);
             _bulletVFXPool.Initialize();
@@ -63,15 +72,21 @@ namespace Code.Services
 
             _enemySpawner = new EnemySpawner(_enemyFactory);
 
-            _bulletSpawner = new BulletSpawner(_bulletFactory);
-            _playerGunFactory.GunCreated += _bulletSpawner.SubscribeOnGunShootEvent;
-            _enemyGunFactory.GunCreated += _bulletSpawner.SubscribeOnGunShootEvent;
+            _playerBulletSpawner = new BulletSpawner(_playerBulletFactory);
+            _enemyBulletSpawner = new BulletSpawner(_enemyBulletFactory);
 
-            _bulletFactory.BulletCreated += _damageProvider.SubscribeOnBulletCollidedEvent;
-            _bulletFactory.BulletReleased += _damageProvider.UnsubscribeFromBulletCollidedEvent;
+            _playerGunFactory.GunCreated += _playerBulletSpawner.SubscribeOnGunShootEvent;
+            _enemyGunFactory.GunCreated += _enemyBulletSpawner.SubscribeOnGunShootEvent;
+            
+            _enemyBulletFactory.BulletCreated += _damageProvider.SubscribeOnBulletCollidedEvent;
+            _enemyBulletFactory.BulletReleased += _damageProvider.UnsubscribeFromBulletCollidedEvent;
+            _playerBulletFactory.BulletCreated += _damageProvider.SubscribeOnBulletCollidedEvent;
+            _playerBulletFactory.BulletReleased += _damageProvider.UnsubscribeFromBulletCollidedEvent;
 
-            _bulletFactory.BulletCreated += _bulletsCollisionHandler.SubscribeOnBulletCollidedEvent;
-            _bulletFactory.BulletReleased += _bulletsCollisionHandler.UnsubscribeFromBulletCollidedEvent;
+            _enemyBulletFactory.BulletCreated += _bulletsCollisionHandler.SubscribeOnBulletCollidedEvent;
+            _enemyBulletFactory.BulletReleased += _bulletsCollisionHandler.UnsubscribeFromBulletCollidedEvent;
+            _playerBulletFactory.BulletCreated += _bulletsCollisionHandler.SubscribeOnBulletCollidedEvent;
+            _playerBulletFactory.BulletReleased += _bulletsCollisionHandler.UnsubscribeFromBulletCollidedEvent;
         }
 
         public void SpawnPlayer()
@@ -87,14 +102,18 @@ namespace Code.Services
 
         public void Cleanup()
         {
-            _playerGunFactory.GunCreated -= _bulletSpawner.SubscribeOnGunShootEvent;
-            _enemyGunFactory.GunCreated -= _bulletSpawner.SubscribeOnGunShootEvent;
+            _playerGunFactory.GunCreated -= _playerBulletSpawner.SubscribeOnGunShootEvent;
+            _enemyGunFactory.GunCreated -= _enemyBulletSpawner.SubscribeOnGunShootEvent;
 
-            _bulletFactory.BulletCreated -= _damageProvider.SubscribeOnBulletCollidedEvent;
-            _bulletFactory.BulletReleased -= _damageProvider.UnsubscribeFromBulletCollidedEvent;
+            _enemyBulletFactory.BulletCreated -= _damageProvider.SubscribeOnBulletCollidedEvent;
+            _enemyBulletFactory.BulletReleased -= _damageProvider.UnsubscribeFromBulletCollidedEvent;
+            _playerBulletFactory.BulletCreated -= _damageProvider.SubscribeOnBulletCollidedEvent;
+            _playerBulletFactory.BulletReleased -= _damageProvider.UnsubscribeFromBulletCollidedEvent;
 
-            _bulletFactory.BulletCreated -= _bulletsCollisionHandler.SubscribeOnBulletCollidedEvent;
-            _bulletFactory.BulletReleased -= _bulletsCollisionHandler.UnsubscribeFromBulletCollidedEvent;
+            _enemyBulletFactory.BulletCreated -= _bulletsCollisionHandler.SubscribeOnBulletCollidedEvent;
+            _enemyBulletFactory.BulletReleased -= _bulletsCollisionHandler.UnsubscribeFromBulletCollidedEvent;
+            _playerBulletFactory.BulletCreated -= _bulletsCollisionHandler.SubscribeOnBulletCollidedEvent;
+            _playerBulletFactory.BulletReleased -= _bulletsCollisionHandler.UnsubscribeFromBulletCollidedEvent;
         }
     }
 }
