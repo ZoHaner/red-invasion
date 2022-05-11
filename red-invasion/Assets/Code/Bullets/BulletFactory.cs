@@ -1,16 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Code.Bullets;
 using Code.Common;
+using Code.Services;
 using UnityEngine;
 using UnityEngine.Pool;
+using Object = UnityEngine.Object;
 
-namespace Code.Services
+namespace Code.Bullets
 {
     public class BulletFactory
     {
-        private const string BulletParamsAddress = "Bullet Parameters";
-        
+        public Action<BulletController> BulletCreated;
+        public Action<BulletController> BulletReleased;
+
+        private readonly string _bulletParamsAddress;
         private readonly IAssetProvider _assetProvider;
         private readonly IUpdateProvider _updateProvider;
 
@@ -20,8 +24,9 @@ namespace Code.Services
         private Dictionary<BulletController, BulletView> _bulletComponents = new Dictionary<BulletController, BulletView>();
         private BulletParams _bulletParams;
 
-        public BulletFactory(IAssetProvider assetProvider, IUpdateProvider updateProvider)
+        public BulletFactory(string bulletParamsAddress, IAssetProvider assetProvider, IUpdateProvider updateProvider)
         {
+            _bulletParamsAddress = bulletParamsAddress;
             _assetProvider = assetProvider;
             _updateProvider = updateProvider;
             Initialize();
@@ -34,15 +39,16 @@ namespace Code.Services
 
         public async Task WarmUp()
         {
-            _bulletParams = await _assetProvider.Load<BulletParams>(BulletParamsAddress);
+            _bulletParams = await _assetProvider.Load<BulletParams>(_bulletParamsAddress);
             _bulletPrefab = await _assetProvider.Load<GameObject>(_bulletParams.PrefabReference);
         }
-
 
         public BulletController GetBullet(Vector3 position, Vector3 direction)
         {
             var bullet = _bullets.Get();
-            return ConfigureBullet(bullet, position, direction);
+            var bulletController = ConfigureBullet(bullet, position, direction);
+            BulletCreated?.Invoke(bulletController);
+            return bulletController;
         }
 
         public void ReleaseBullet(BulletController bulletController)
@@ -54,6 +60,8 @@ namespace Code.Services
                 _bullets.Release(bulletView);
                 bulletView.gameObject.SetActive(false);
 
+                BulletReleased?.Invoke(bulletController);
+                
                 _updateProvider.EnqueueUnregister(bulletController);
             }
             else
@@ -62,7 +70,7 @@ namespace Code.Services
             }
         }
 
-        private BulletView InstantiateBullet() => 
+        private BulletView InstantiateBullet() =>
             Object.Instantiate(_bulletPrefab, Anchor<BulletView>.Transform).GetComponent<BulletView>();
 
         private BulletController ConfigureBullet(BulletView bulletView, Vector3 position, Vector3 direction)
@@ -71,7 +79,7 @@ namespace Code.Services
             bulletController.PositionChanged += bulletView.Move;
             _bulletComponents[bulletController] = bulletView;
             bulletView.gameObject.SetActive(true);
-            
+
             _updateProvider.EnqueueRegister(bulletController);
             return bulletController;
         }

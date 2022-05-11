@@ -7,6 +7,7 @@ namespace Code.Enemies
         [HideInInspector]
         public WalkingRange EnemyWalkingRange;
         public float EnemySpeed = 1f;
+        public float ShootingRate = 1.5f;
 
         private Vector3 BorderGizmoSize = new Vector3(0.1f, 0.5f, 0.1f);
 

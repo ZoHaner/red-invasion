@@ -1,36 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2689649364750185015
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8538638851620578886}
-  m_Layer: 9
-  m_Name: GroundChecker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8538638851620578886
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2689649364750185015}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.017, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7825613904641749450}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3954189696415893135
 GameObject:
   m_ObjectHideFlags: 0
@@ -71,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7168994498478587248}
-  - component: {fileID: 3793335223063023063}
+  - component: {fileID: 3073053957349259963}
   m_Layer: 9
   m_Name: Gun
   m_TagString: Untagged
@@ -96,7 +65,7 @@ Transform:
   m_Father: {fileID: 7825613904065772231}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3793335223063023063
+--- !u!114 &3073053957349259963
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,10 +74,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6682137150756888179}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb89c31f799c4d2f958c088fa100f720, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e01e29656c64ffbb26dffaea83b86ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gunTip: {fileID: 3766802042462025066}
+  ShootingPoint: {fileID: 3766802042462025066}
 --- !u!1 &7825613903216911372
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,8 +279,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7825613904065772231}
-  - {fileID: 7825613904828505498}
-  - {fileID: 8538638851620578886}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -357,13 +324,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMovementParams:
     Speed: 4
-    JumpHeight: 1.5
-    Gravity: -29
-    GroundDistance: 0.2
+    JumpHeight: 0.01
+    Gravity: 0.41
+    GroundDistance: 0.05
     GroundLayer:
       serializedVersion: 2
       m_Bits: 64
-  GroundChecker: {fileID: 8538638851620578886}
+  GroundChecker: {fileID: 0}
 --- !u!143 &8963329842736452140
 CharacterController:
   m_ObjectHideFlags: 0
@@ -379,52 +346,6 @@ CharacterController:
   m_Radius: 0.35
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.03
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.42, z: 0}
---- !u!1 &7825613904828505499
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7825613904828505498}
-  - component: {fileID: 7825613904828505497}
-  m_Layer: 9
-  m_Name: Physics
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &7825613904828505498
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7825613904828505499}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.405, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7825613904641749450}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &7825613904828505497
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7825613904828505499}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.20000003
-  m_Height: 0.8
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}

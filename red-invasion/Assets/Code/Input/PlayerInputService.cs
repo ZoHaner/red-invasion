@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Code.Input
 {
-    public class StandaloneInputService : IInputService
+    public class PlayerInputService : IInputService
     {
         private const string HorizontalMoveAxisName = "Horizontal";
         private const string VerticalMoveAxisName = "Vertical";

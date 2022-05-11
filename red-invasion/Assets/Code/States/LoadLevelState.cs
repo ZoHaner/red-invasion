@@ -16,6 +16,7 @@ namespace Code.States
         public async void Enter()
         {
             await _session.WarmUp();
+            _session.Initialize();
             _session.SpawnPlayer();
             _session.SpawnEnemies();
 

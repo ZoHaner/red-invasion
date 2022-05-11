@@ -34,7 +34,19 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 95c155bf8175a4b90992ecf89b15c705
-    m_Address: Bullet Parameters
+    m_Address: Player Bullet Parameters
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 55db10e1a587148ec87a46926c2cdfc3
+    m_Address: BulletVFX
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 1ffcc091322f64dc3a0d09537b5501df
+    m_Address: Bullet VFX Params
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: eb274d1b63cd1402986b176b8cf1ff8c
+    m_Address: Enemy Bullet Parameters
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0
