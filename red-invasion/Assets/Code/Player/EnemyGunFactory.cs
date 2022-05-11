@@ -1,5 +1,4 @@
 using System;
-using Code.Enemies;
 using Code.Input;
 using Code.Services;
 using Code.Shooting;
