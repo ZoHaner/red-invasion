@@ -17,26 +17,30 @@ namespace Code.States
         public async void Enter()
         {
             SubscribeOnEvents();
-            
+
             await _session.WarmUp();
             _session.Initialize();
             _session.SpawnPlayer();
             _session.SpawnEnemies();
-
-            // _stateMachine.SetState(typeof(GameState));
         }
 
-        public void Exit() => 
+        public void Exit()
+        {
             UnsubscribeFromEvents();
+
+            _session.Cleanup();
+        }
 
         private void MoveToWinScreen()
         {
             Debug.Log("Win");
+            _stateMachine.SetState(typeof(LoadLevelState));
         }
 
         private void MoveToLooseScreen()
         {
             Debug.Log("Loose");
+            _stateMachine.SetState(typeof(LoadLevelState));
         }
 
         private void SubscribeOnEvents()

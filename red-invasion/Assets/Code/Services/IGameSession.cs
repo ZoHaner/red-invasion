@@ -11,5 +11,6 @@ namespace Code.Services
         void Initialize();
         Action WinGame { get; set; }
         Action LooseGame { get; set; }
+        void Cleanup();
     }
 }
