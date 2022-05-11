@@ -49,6 +49,14 @@ MonoBehaviour:
     m_Address: Enemy Bullet Parameters
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 2aad1114e530d4d6db2838bd83cd5f71
+    m_Address: Win Area Bounds
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 77ea060f98f3346519f2ed7c6752d450
+    m_Address: Loose Area Bounds
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 305ddc907c92140d997fd21a34393fbf, type: 2}
   m_SchemaSet:
