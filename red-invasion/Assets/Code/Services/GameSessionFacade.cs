@@ -50,8 +50,8 @@ namespace Code.Services
             _enemyFactory = new EnemyFactory(_assetProvider, _updateProvider, _enemyGunFactory);
             _enemyFactory.Initialize();
             await _enemyFactory.WarmUp();
-            _playerBulletFactory = new BulletFactory(PlayerBulletParamsAddress, _assetProvider, _updateProvider);
 
+            _playerBulletFactory = new BulletFactory(PlayerBulletParamsAddress, _assetProvider, _updateProvider);
             await _playerBulletFactory.WarmUp();
 
             _enemyBulletFactory = new BulletFactory(EnemyBulletParamsAddress, _assetProvider, _updateProvider);
@@ -77,7 +77,7 @@ namespace Code.Services
 
             _playerGunFactory.GunCreated += _playerBulletSpawner.SubscribeOnGunShootEvent;
             _enemyGunFactory.GunCreated += _enemyBulletSpawner.SubscribeOnGunShootEvent;
-            
+
             _enemyBulletFactory.BulletCreated += _damageProvider.SubscribeOnBulletCollidedEvent;
             _enemyBulletFactory.BulletReleased += _damageProvider.UnsubscribeFromBulletCollidedEvent;
             _playerBulletFactory.BulletCreated += _damageProvider.SubscribeOnBulletCollidedEvent;

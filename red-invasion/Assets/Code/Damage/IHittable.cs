@@ -1,7 +1,9 @@
+using UnityEngine;
+
 namespace Code.Damage
 {
     public interface IHittable
     {
-        void Hit();
+        void Hit(Vector3 hitDirection);
     }
 }

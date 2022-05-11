@@ -18,10 +18,13 @@ namespace Code.Damage
         private void TryApplyHit(BulletController controller, Vector3 bulletPosition, Collider[] colliders)
         {
             foreach (var collider in colliders)
-                TryApplyHit(collider.gameObject);
+            {
+                var hitDirection = collider.transform.position - bulletPosition;
+                TryApplyHit(collider.gameObject, hitDirection);
+            }
         }
 
-        private void TryApplyHit(GameObject collidedObject) =>
-            collidedObject.GetComponent<IHittable>()?.Hit();
+        private void TryApplyHit(GameObject collidedObject, Vector3 hitDirection) =>
+            collidedObject.GetComponent<IHittable>()?.Hit(hitDirection);
     }
 }

@@ -1,10 +1,11 @@
+using Code.Damage;
 using Code.Input;
 using Code.Services;
 using UnityEngine;
 
 namespace Code.Player
 {
-    public class PlayerMovementView : MonoBehaviour, IUpdatable
+    public class PlayerMovementView : MonoBehaviour, IUpdatable, IHittable
     {
         [SerializeField] private PlayerMovementParams playerMovementParams;
         [SerializeField] private Transform GroundChecker;
@@ -39,6 +40,11 @@ namespace Code.Player
                 moveVector,
                 jump,
                 deltaTime);
+        }
+
+        public void Hit(Vector3 hitDirection)
+        {
+            _playerMovementController.AddForce(hitDirection, 50f);
         }
 
         private void ApplyMovement(Vector3 deltaMove)

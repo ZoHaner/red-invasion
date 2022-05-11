@@ -37,7 +37,7 @@ namespace Code.Enemies
             _enemyMovementController.CalculateNextPosition(_leftBorder, _rightBorder, transform.position, _speed, deltaTime);
         }
 
-        public void Hit()
+        public void Hit(Vector3 hitDirection)
         {
             Hitted?.Invoke(this);
         }
