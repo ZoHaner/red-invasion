@@ -3,12 +3,13 @@ using UnityEngine;
 
 namespace Code.States
 {
-    public class LoadLevelState : IState
+    public class GameSessionState : IState
     {
         private readonly StateMachine _stateMachine;
         private readonly IGameSession _session;
+        private int i;
 
-        public LoadLevelState(StateMachine stateMachine, IGameSession session)
+        public GameSessionState(StateMachine stateMachine, IGameSession session)
         {
             _stateMachine = stateMachine;
             _session = session;
@@ -18,7 +19,6 @@ namespace Code.States
         {
             SubscribeOnEvents();
 
-            await _session.WarmUp();
             _session.Initialize();
             _session.SpawnPlayer();
             _session.SpawnEnemies();
@@ -26,21 +26,26 @@ namespace Code.States
 
         public void Exit()
         {
-            UnsubscribeFromEvents();
+            // UnsubscribeFromEvents();
 
             _session.Cleanup();
         }
 
         private void MoveToWinScreen()
         {
+            UnsubscribeFromEvents();
+
             Debug.Log("Win");
-            _stateMachine.SetState(typeof(LoadLevelState));
+            _stateMachine.SetState(typeof(GameSessionState));
         }
 
         private void MoveToLooseScreen()
         {
-            Debug.Log("Loose");
-            _stateMachine.SetState(typeof(LoadLevelState));
+            UnsubscribeFromEvents();
+
+            i++;
+            Debug.Log("Loose " + i);
+            _stateMachine.SetState(typeof(GameSessionState));
         }
 
         private void SubscribeOnEvents()

@@ -32,7 +32,6 @@ namespace Code.Services
         private PlayerFactory _playerFactory;
         private PlayerGunFactory _playerGunFactory;
         private EnemyGunFactory _enemyGunFactory;
-        private BulletSpawner _bulletSpawner;
         private EnemySpawner _enemySpawner;
         private BulletVFXSpawner _bulletVFXSpawner;
         private BulletVFXPool _bulletVFXPool;
@@ -77,10 +76,7 @@ namespace Code.Services
 
             _looseAreaEnteringTracker = new AreaEnteringTracker(LooseAreaBoundsAddress, _assetProvider);
             await _looseAreaEnteringTracker.Warmup();
-        }
 
-        public void Initialize()
-        {
             _bulletVFXSpawner = new BulletVFXSpawner(_bulletVFXPool);
 
             _damageProvider = new DamageProvider();
@@ -92,6 +88,12 @@ namespace Code.Services
             _playerBulletSpawner = new BulletSpawner(_playerBulletFactory);
             _enemyBulletSpawner = new BulletSpawner(_enemyBulletFactory);
 
+            _updateProvider.EnqueueRegister(_winAreaEnteringTracker);
+            _updateProvider.EnqueueRegister(_looseAreaEnteringTracker);
+        }
+
+        public void Initialize()
+        {
             _playerGunFactory.GunCreated += _playerBulletSpawner.SubscribeOnGunShootEvent;
             _enemyGunFactory.GunCreated += _enemyBulletSpawner.SubscribeOnGunShootEvent;
 
@@ -105,11 +107,8 @@ namespace Code.Services
             _playerBulletFactory.BulletCreated += _bulletsCollisionHandler.SubscribeOnBulletCollidedEvent;
             _playerBulletFactory.BulletReleased += _bulletsCollisionHandler.UnsubscribeFromBulletCollidedEvent;
 
-            _winAreaEnteringTracker.OnAreaEntered += () => WinGame?.Invoke();
-            _looseAreaEnteringTracker.OnAreaEntered += () => LooseGame?.Invoke();
-            
-            _updateProvider.EnqueueRegister(_winAreaEnteringTracker);
-            _updateProvider.EnqueueRegister(_looseAreaEnteringTracker);
+            _winAreaEnteringTracker.OnAreaEntered += InvokeWinEvent;
+            _looseAreaEnteringTracker.OnAreaEntered += InvokeLooseEvent;
         }
 
         public void SpawnPlayer()
@@ -127,6 +126,11 @@ namespace Code.Services
 
         public void Cleanup()
         {
+            _playerFactory.ReleasePlayer();
+            _enemySpawner.ReleaseActiveEnemies();
+            _playerBulletSpawner.ReleaseAllBullets();
+            _enemyBulletSpawner.ReleaseAllBullets();
+
             _playerGunFactory.GunCreated -= _playerBulletSpawner.SubscribeOnGunShootEvent;
             _enemyGunFactory.GunCreated -= _enemyBulletSpawner.SubscribeOnGunShootEvent;
 
@@ -139,12 +143,19 @@ namespace Code.Services
             _enemyBulletFactory.BulletReleased -= _bulletsCollisionHandler.UnsubscribeFromBulletCollidedEvent;
             _playerBulletFactory.BulletCreated -= _bulletsCollisionHandler.SubscribeOnBulletCollidedEvent;
             _playerBulletFactory.BulletReleased -= _bulletsCollisionHandler.UnsubscribeFromBulletCollidedEvent;
-            
-            _winAreaEnteringTracker.OnAreaEntered -= () => WinGame?.Invoke();
-            _looseAreaEnteringTracker.OnAreaEntered -= () => LooseGame?.Invoke();
-            
-            _updateProvider.EnqueueUnregister(_winAreaEnteringTracker);
-            _updateProvider.EnqueueUnregister(_looseAreaEnteringTracker);
+
+            _winAreaEnteringTracker.OnAreaEntered -= InvokeWinEvent;
+            _looseAreaEnteringTracker.OnAreaEntered -= InvokeLooseEvent;
+        }
+
+        private void InvokeLooseEvent()
+        {
+            LooseGame?.Invoke();
+        }
+
+        private void InvokeWinEvent()
+        {
+            WinGame?.Invoke();
         }
     }
 }

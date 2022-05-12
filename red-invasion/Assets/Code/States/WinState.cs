@@ -1,16 +1,12 @@
-using Code.Services;
-
 namespace Code.States
 {
-    public class GameState : IState
+    public class WinState : IState
     {
         private readonly StateMachine _stateMachine;
-        private readonly GameSessionFacade _sessionFacade;
 
-        public GameState(StateMachine stateMachine, GameSessionFacade sessionFacade)
+        public WinState(StateMachine stateMachine)
         {
             _stateMachine = stateMachine;
-            _sessionFacade = sessionFacade;
         }
 
         public void Enter()
