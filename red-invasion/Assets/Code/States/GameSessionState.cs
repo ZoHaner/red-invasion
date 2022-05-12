@@ -7,7 +7,6 @@ namespace Code.States
     {
         private readonly StateMachine _stateMachine;
         private readonly IGameSession _session;
-        private int i;
 
         public GameSessionState(StateMachine stateMachine, IGameSession session)
         {
@@ -15,7 +14,7 @@ namespace Code.States
             _session = session;
         }
 
-        public async void Enter()
+        public void Enter()
         {
             SubscribeOnEvents();
 
@@ -26,26 +25,19 @@ namespace Code.States
 
         public void Exit()
         {
-            // UnsubscribeFromEvents();
-
             _session.Cleanup();
         }
 
         private void MoveToWinScreen()
         {
             UnsubscribeFromEvents();
-
-            Debug.Log("Win");
-            _stateMachine.SetState(typeof(GameSessionState));
+            _stateMachine.SetState(typeof(WinState));
         }
 
         private void MoveToLooseScreen()
         {
             UnsubscribeFromEvents();
-
-            i++;
-            Debug.Log("Loose " + i);
-            _stateMachine.SetState(typeof(GameSessionState));
+            _stateMachine.SetState(typeof(LooseState));
         }
 
         private void SubscribeOnEvents()

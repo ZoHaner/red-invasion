@@ -57,6 +57,14 @@ MonoBehaviour:
     m_Address: Loose Area Bounds
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 08019af93af484f56a2a70b5f0b3683c
+    m_Address: Win Window
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: de28778798e8345fea09840505bb0c85
+    m_Address: Loose Window
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 305ddc907c92140d997fd21a34393fbf, type: 2}
   m_SchemaSet:
