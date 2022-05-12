@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7168994498478587248}
   - component: {fileID: 3073053957349259963}
+  - component: {fileID: 4651777977207108725}
   m_Layer: 9
   m_Name: Gun
   m_TagString: Untagged
@@ -78,6 +79,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShootingPoint: {fileID: 3766802042462025066}
+--- !u!114 &4651777977207108725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6682137150756888179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da7798ce8c934c719d7c0b2acf34e746, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Mask:
+    serializedVersion: 2
+    m_Bits: 384
 --- !u!1 &7825613903216911372
 GameObject:
   m_ObjectHideFlags: 0
@@ -330,7 +346,6 @@ MonoBehaviour:
     GroundLayer:
       serializedVersion: 2
       m_Bits: 64
-  GroundChecker: {fileID: 0}
 --- !u!143 &8963329842736452140
 CharacterController:
   m_ObjectHideFlags: 0
