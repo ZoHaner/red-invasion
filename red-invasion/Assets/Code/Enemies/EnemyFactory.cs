@@ -59,6 +59,7 @@ namespace Code.Enemies
             _gunFactory.DisableEnemyGun(enemyView.GetComponent<EnemyGunView>());
             _updateProvider.EnqueueUnregister(enemyView);
             enemyView.gameObject.SetActive(false);
+            _enemyPool.Release(enemyView);
         }
 
         private EnemyMovementView InstantiateEnemy() =>

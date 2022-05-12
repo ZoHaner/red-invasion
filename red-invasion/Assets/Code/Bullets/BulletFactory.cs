@@ -55,14 +55,13 @@ namespace Code.Bullets
         {
             if (_bulletComponents.TryGetValue(bulletController, out var bulletView))
             {
-                bulletController.PositionChanged += bulletView.Move;
+                bulletController.PositionChanged -= bulletView.Move;
                 _bulletComponents.Remove(bulletController);
-                _bullets.Release(bulletView);
                 bulletView.gameObject.SetActive(false);
+                _bullets.Release(bulletView);
+                _updateProvider.EnqueueUnregister(bulletController);
 
                 BulletReleased?.Invoke(bulletController);
-                
-                _updateProvider.EnqueueUnregister(bulletController);
             }
             else
             {

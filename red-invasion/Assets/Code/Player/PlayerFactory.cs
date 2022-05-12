@@ -18,6 +18,8 @@ namespace Code.Player
         private readonly PlayerGunFactory _gunFactory;
 
         private Action<GameObject> _playerCreated;
+        
+        private GameObject _player;
 
         public PlayerFactory(IInputService inputService, IUpdateProvider updateProvider, IAssetProvider assetProvider, PlayerGunFactory gunFactory)
         {
@@ -34,28 +36,41 @@ namespace Code.Player
         
         public GameObject SpawnPlayer()
         {
-            var player = GameObject.Instantiate(_playerPrefab, Vector3.up, Quaternion.identity);
+            if (_player != null)
+            {
+                _player.transform.position = Vector3.zero;
+                _player.SetActive(true);
+                _playerCreated?.Invoke(_player);
+                return _player;
+            }
+            
+            _player = GameObject.Instantiate(_playerPrefab, Vector3.up, Quaternion.identity);
 
-            var playerCamera = player.GetComponent<CameraRotationView>();
+            var playerCamera = _player.GetComponent<CameraRotationView>();
             playerCamera.Construct(_inputService);
             playerCamera.Initialize();
 
-            var playerBody = player.GetComponent<BodyRotationView>();
+            var playerBody = _player.GetComponent<BodyRotationView>();
             playerBody.Construct(_inputService);
             playerBody.Initialize();
 
-            var playerMovement = player.GetComponent<PlayerMovementView>();
+            var playerMovement = _player.GetComponent<PlayerMovementView>();
             playerMovement.Construct(_inputService);
             playerMovement.Initialize();
 
-            _gunFactory.ConfigurePlayerGun(player);
+            _gunFactory.ConfigurePlayerGun(_player);
             
             _updateProvider.EnqueueRegister(playerCamera);
             _updateProvider.EnqueueRegister(playerBody);
             _updateProvider.EnqueueRegister(playerMovement);
 
-            _playerCreated?.Invoke(player);
-            return player;
+            _playerCreated?.Invoke(_player);
+            return _player;
+        }
+
+        public void ReleasePlayer()
+        {
+            _player.SetActive(false);
         }
     }
 }

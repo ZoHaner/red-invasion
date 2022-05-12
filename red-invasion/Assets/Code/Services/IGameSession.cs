@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace Code.Services
@@ -8,5 +9,8 @@ namespace Code.Services
         void SpawnPlayer();
         void SpawnEnemies();
         void Initialize();
+        Action WinGame { get; set; }
+        Action LooseGame { get; set; }
+        void Cleanup();
     }
 }

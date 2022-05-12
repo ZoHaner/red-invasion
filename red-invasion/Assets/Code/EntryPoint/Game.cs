@@ -9,7 +9,7 @@ namespace Code.EntryPoint
     public class Game : MonoBehaviour
     {
         private StateMachine _stateMachine;
-        private readonly Type _entryState = typeof(LoadLevelState);
+        private readonly Type _entryState = typeof(LoadSessionState);
 
         private void Start()
         {
@@ -24,11 +24,14 @@ namespace Code.EntryPoint
             var assetProvider = new AssetProvider();
             var updateProvider = CreateUpdateProvider();
             var inputService = new PlayerInputService();
+            var hudService = new HUDService(assetProvider);
 
             var session = new GameSessionFacade(assetProvider, updateProvider, inputService);
             
-            _stateMachine.AddState(typeof(LoadLevelState), new LoadLevelState(_stateMachine, session));
-            _stateMachine.AddState(typeof(GameState), new GameState(_stateMachine, session));
+            _stateMachine.AddState(typeof(LoadSessionState), new LoadSessionState(_stateMachine, session, hudService));
+            _stateMachine.AddState(typeof(GameSessionState), new GameSessionState(_stateMachine, session));
+            _stateMachine.AddState(typeof(WinState), new WinState(_stateMachine, hudService));
+            _stateMachine.AddState(typeof(LooseState), new LooseState(_stateMachine, hudService));
         }
 
         private IUpdateProvider CreateUpdateProvider() => 
