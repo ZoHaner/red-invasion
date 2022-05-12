@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Win Area Bounds
   m_EditorClassIdentifier: 
   Bounds:
-    m_Center: {x: 0.18, y: 0.44, z: 23.01}
-    m_Extent: {x: 0.9, y: 0.43, z: 0.54}
+    m_Center: {x: 0.03, y: 0.44, z: 22.98}
+    m_Extent: {x: 1.5232158, y: 0.43, z: 1.506992}

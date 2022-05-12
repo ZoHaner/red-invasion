@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Loose Area Bounds
   m_EditorClassIdentifier: 
   Bounds:
-    m_Center: {x: 0.18, y: 0.44, z: 23.01}
-    m_Extent: {x: 0.9, y: 0.43, z: 0.54}
+    m_Center: {x: 0.03, y: -1.41, z: 12.12}
+    m_Extent: {x: 6.0983443, y: 0.43, z: 19.209972}

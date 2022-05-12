@@ -24,11 +24,11 @@ namespace Code.Editor
             if (EditorGUI.EndChangeCheck())
             {
                 winningArea.AreaData.Bounds.size = scale;
-                MarkTargetDirty();
+                MarkDirty(winningArea.AreaData);
             }
         }
         
-        private void MarkTargetDirty() =>
-            EditorUtility.SetDirty(target);
+        private void MarkDirty(Object obj) =>
+            EditorUtility.SetDirty(obj);
     }
 }
